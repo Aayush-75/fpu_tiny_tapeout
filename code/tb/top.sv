@@ -1,6 +1,6 @@
 `include "pkg.sv"
-`include "interface.sv" 
-`include "dut.sv"
+`include "interface.sv"
+`include "../rtl/project.sv"
 
 module top;
 
@@ -24,17 +24,17 @@ module top;
     );
 
     initial
-		forever 
+		forever
 		   #40 clk=~clk; //40 ns = 25 Mhz
 
  	initial
 	begin
 	    uvm_config_db#(virtual fpu_if)::set(null,"*","vif",DUV_IF);
 	    run_test("normal_addition_test");
-	end	
+	end
  	initial begin
 		    $fsdbDumpfile("wave.fsdb");
 		    $fsdbDumpvars(0, top);
 	end
-   
+
 endmodule
