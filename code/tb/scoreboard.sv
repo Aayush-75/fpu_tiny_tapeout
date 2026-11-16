@@ -48,6 +48,7 @@ class scoreboard extends uvm_scoreboard;
             `uvm_info(get_type_name(),$sformatf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",$time,ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),UVM_NONE)
             ref_task();
             chekk();
+            $display("");
         end
     endtask
 
@@ -60,6 +61,11 @@ class scoreboard extends uvm_scoreboard;
             p_write_en = 0;
             p_read_en = 0;
             p_start = 0;
+            p_busy = 0;
+            result = 0;
+            a = 0;
+            b = 0;
+            operation_complete = 0;
         end
         else
         begin
