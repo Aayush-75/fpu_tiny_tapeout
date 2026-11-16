@@ -23,10 +23,11 @@ class op_mon extends uvm_monitor;
         intrf = cfg.intrf;
     endfunction
 
-    task tun_phase(uvm_phase phase);
+    task run_phase(uvm_phase phase);
         repeat(3) @(intrf.op_mon_cb);
         forever
         begin
+            req = seq_item::type_id::create("seq");
             req.uo_out = intrf.op_mon_mod.op_mon_cb.uo_out;
             req.uio_out = intrf.op_mon_mod.op_mon_cb.uio_out;
             req.uio_oe = intrf.op_mon_mod.op_mon_cb.uio_oe;

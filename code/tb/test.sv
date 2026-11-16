@@ -13,6 +13,8 @@ class test extends uvm_test;
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         cfg = fpu_cfg::type_id::create("config file",this);
+        if(!uvm_config_db#(virtual fpu_if)::get(this,"","vif",cfg.intrf))
+            `uvm_fatal(get_type_name(),"FAILED TO GET CONFIG FILE")
         environment = env::type_id::create("environment",this);
         cfg.ip_agent = UVM_ACTIVE;
         cfg.op_agent = UVM_PASSIVE;

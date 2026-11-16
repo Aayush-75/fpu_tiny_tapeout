@@ -23,10 +23,11 @@ class ip_mon extends uvm_monitor;
         intrf = cfg.intrf;
     endfunction
 
-    task tun_phase(uvm_phase phase);
+    task run_phase(uvm_phase phase);
         repeat(2) @(intrf.ip_mon_cb);
         forever
         begin
+            req = seq_item::type_id::create("seq");
             req.rst_n = intrf.ip_mon_cb.rst_n;
             req.ena = intrf.ip_mon_cb.ena;
             req.ui_in = intrf.ip_mon_cb.ui_in;

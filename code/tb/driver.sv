@@ -15,7 +15,7 @@ class my_driver extends uvm_driver#(seq_item);
             `uvm_fatal(get_type_name(),"failed to get config file")
     endfunction
 
-    function void connectt_phase(uvm_phase phase);
+    function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
         intrf = cfg.intrf;
     endfunction
