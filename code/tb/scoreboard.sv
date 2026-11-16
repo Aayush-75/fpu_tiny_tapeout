@@ -45,6 +45,7 @@ class scorboard extends uvm_scorebaord;
         begin
             ip_fifo.get(ip);
             op_fifo.get(op);
+            `uvm_info(get_type_name(),$sformtf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),uvm_none)
             ref_task();
             chekk();    
         end
@@ -91,7 +92,7 @@ class scorboard extends uvm_scorebaord;
                         result = a;
                     end
                 end
-                else if((a[14:10]==0) && (a[14:10]==31) && (b[14:10]==0) && (b[14:10]==31))
+                else if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
                 begin
                     if(busy_cnt==2)
                     begin
@@ -140,7 +141,11 @@ class scorboard extends uvm_scorebaord;
                     end
                 end
             end
-            if((p_write_en==0) && (ip.ui_in[0]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            if((p_start==0) && (ip.ui_in[2]==1) && (ip.uo_out[3]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            begin
+                p_busy=1;
+            end
+            else if((p_write_en==0) && (ip.ui_in[0]==1) && (ip.uo_out[0]==0) && (!operation_complete))
             begin
                 case(write_ptr)
                     0: a[7:0] = uio_in;
@@ -166,10 +171,6 @@ class scorboard extends uvm_scorebaord;
                 endcase
                 read_ptr++;
             end 
-            if((p_start==0) && (ip.ui_in[2]==1) && (ip.uo_out[3]==1) && (ip.uo_out[0]==0) && (!operation_complete))
-            begin
-                p_busy=1;
-            end
         end
         p_write_en = ip.ui_in[0];
         p_read_en = ip.ui_in[1];
@@ -178,10 +179,18 @@ class scorboard extends uvm_scorebaord;
     endtask
 
     task checkk();
-        if((ip.uo_out==op.uo_out) && (op.uio_out==ip.uio_out))
+        if((ip.uo_out==op.uo_out) && (op.uio_out==ip.uio_out) && (op.uio_oe==ip.uio_oe))
             PASS++;
+            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------PASS-------------------",$time),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("PASS = %0d",PASS),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),uvm_none)
         else
             FAIL++;
+            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------FAIL-------------------",$time),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("FAIL = %0d",FAIL),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),uvm_none)
     endtask
 
     function automatic logic [15:0] real_to_fp16(real val);
@@ -194,42 +203,24 @@ class scorboard extends uvm_scorebaord;
     logic [9:0]  frac16;
     int          true_exp;
 
-    //Convert real to 64-bit vector
     fp64_bits = $realtobits(val);
     
     sign   = fp64_bits[63];
     exp64  = fp64_bits[62:52];
     frac64 = fp64_bits[51:0];
     
-    //Calculate true mathematical exponent
     true_exp = int'(exp64) - 1023; 
 
-    //Handle conversion, overflow, and underflow
-    if (exp64 == 11'h000) begin
-        //Exact Zero (Flushing subnormals to zero for simplicity)
+    // overflow and underflow
+    if ((exp64 == 11'h000) || (exp64 == 11'h7FF) || (true_exp > 15) || (true_exp < -14)) 
+    begin
         exp16  = 5'h00;
         frac16 = 10'h000;
     end 
-    else if (exp64 == 11'h7FF) begin
-        //Infinity or NaN
-        exp16  = 5'h1F;
-        frac16 = (frac64 == '0) ? 10'h000 : {1'b1, 9'd0}; // Infinity or Quiet NaN
-    end 
-    else if (true_exp > 15) begin
-        //Overflow (Number is too large for FP16, clamp to Infinity)
-        exp16  = 5'h1F;
-        frac16 = 10'h000;
-    end 
-    else if (true_exp < -14) begin
-        //Underflow (Number is too small for FP16 normal, clamp to Zero)
-        exp16  = 5'h00;
-        frac16 = 10'h000;
-    end 
-    else begin
-        //Standard Normalized Number
+    else 
+    begin
         //Apply FP16 bias (15) to the true exponent
         exp16  = 5'(true_exp + 15);
-        
         //Truncate the 52-bit fraction down to 10 bits
         frac16 = frac64[51:42]; 
     end
