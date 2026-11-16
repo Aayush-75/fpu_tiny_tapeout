@@ -24,7 +24,7 @@ class op_mon extends uvm_monitor;
     endfunction 
 
     task tun_phase(uvm_phase phase);
-        repeat(2) @(intrf.op_mon_cb);
+        repeat(3) @(intrf.op_mon_cb);
         forever 
         begin
             req.uo_out = intrf.op_mon_mod.op_mon_cb.uo_out;

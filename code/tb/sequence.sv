@@ -1,6 +1,6 @@
 class my_sequence extend uvm_sequence#(seq_item);
 
-    static longint count;
+    static longint needed_count;
 
     `uvm_object_utils(reset_seq)
     
@@ -19,6 +19,8 @@ class reset_seq extends my_sequence;
     endfunction
 
     task body();
+        needed_count=0;
+        uvm_config_db#(longint)::set(null,"*",count,needed_count);
         req = seq_item::type_id::create("seq");
         start_item(req);
         req.randomize() with
@@ -38,13 +40,9 @@ class normal_addition extends my_sequence;
         super.new(name);
     endfunction
 
-    function void post_randomize();
-        if(count==13)
-            count=0;
-        count++;
-    endfunction
-
     task body();
+        needed_count=13;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
         req = seq_item::type_id::create("seq");
         start_item(req);
         req.randomize() with
