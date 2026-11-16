@@ -23,7 +23,8 @@ class seq_item extends uvm_seq_item;
         uvm_config_db#(longint)::get(this,"","count",needed_count);
         if(count==needed_count)
             count=0;
-        count++;
+        else
+            count++;
     endfunction
 
 endclass
