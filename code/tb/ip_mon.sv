@@ -6,7 +6,7 @@ class ip_mon extends uvm_monitor;
         super.new(name,parent);
     endfunction
 
-    fpu_if intrf;
+    virtual fpu_if intrf;
     fpu_cfg cfg;
     seq_item req;
     uvm_analysis_port#(seq_item) ip_analysis_port;
@@ -18,18 +18,18 @@ class ip_mon extends uvm_monitor;
         ip_analysis_port = new("ip_analysis_port",this);
     endfunction
 
-    function void conncet_phase(uvm_phase phase);
-        super.conncet_phase(phase);
+    function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
         intrf = cfg.intrf;
-    endfunction 
+    endfunction
 
     task tun_phase(uvm_phase phase);
         repeat(2) @(intrf.ip_mon_cb);
-        forever 
+        forever
         begin
-            req.rst_n = intrf.ip_mon_mod.ip_mon_cb.rst_n;
-            req.ena = intrf.ip_mon_mod.ip_mon_cb.ena;
-            req.ui_in = intrf.ip_mon_mod.ip_mon_cb.ui_in;
+            req.rst_n = intrf.ip_mon_cb.rst_n;
+            req.ena = intrf.ip_mon_cb.ena;
+            req.ui_in = intrf.ip_mon_cb.ui_in;
             req.uio_in = intrf.ip_mon_mod.ip_mon_cb.uio_in;
             ip_analysis_port.write(req);
             @(intrf.ip_mon_cb);

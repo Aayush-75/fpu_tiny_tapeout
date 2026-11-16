@@ -1,6 +1,6 @@
-class fpu_cfg extends uvm_objects;
+class fpu_cfg extends uvm_object;
 
-    `uvm_objct_utils(fpu_cfg)
+    `uvm_object_utils(fpu_cfg)
 
     function new(string name="");
         super.new(name);

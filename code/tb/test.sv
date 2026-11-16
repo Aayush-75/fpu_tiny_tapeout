@@ -13,7 +13,7 @@ class test extends uvm_test;
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         cfg = fpu_cfg::type_id::create("config file",this);
-        env = env::type_id::create("environment",this);
+        environment = env::type_id::create("environment",this);
         cfg.ip_agent = UVM_ACTIVE;
         cfg.op_agent = UVM_PASSIVE;
         uvm_config_db#(fpu_cfg)::set(this,"*","cfg",cfg);
@@ -56,6 +56,7 @@ class normal_addition_test extends test;
     endfunction
 
     reset_seq seq1;
+    normal_addition seq2;
 
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
@@ -64,7 +65,7 @@ class normal_addition_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_addition::type_id::create("seq");
-        repeat(1) seq2.start(environment.ia.sqr);
+        repeat(15) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask

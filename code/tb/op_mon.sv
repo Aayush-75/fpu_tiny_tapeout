@@ -6,7 +6,7 @@ class op_mon extends uvm_monitor;
         super.new(name,parent);
     endfunction
 
-    fpu_if intrf;
+    virtual fpu_if intrf;
     fpu_cfg cfg;
     seq_item req;
     uvm_analysis_port#(seq_item) op_analysis_port;
@@ -18,14 +18,14 @@ class op_mon extends uvm_monitor;
         op_analysis_port = new("op_analysis_port",this);
     endfunction
 
-    function void conncet_phase(uvm_phase phase);
-        super.conncet_phase(phase);
+    function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
         intrf = cfg.intrf;
-    endfunction 
+    endfunction
 
     task tun_phase(uvm_phase phase);
         repeat(3) @(intrf.op_mon_cb);
-        forever 
+        forever
         begin
             req.uo_out = intrf.op_mon_mod.op_mon_cb.uo_out;
             req.uio_out = intrf.op_mon_mod.op_mon_cb.uio_out;

@@ -19,11 +19,11 @@ class env extends uvm_env;
         // sub = fpu_subscriber::type_id::create("subscriber",this);
     endfunction
 
-    function void conncet_phase(uvm_phase phase);
-        super.conncet_phase(phase);
+    function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
         ia.im.ip_analysis_port.connect(scb.ip_fifo.analysis_export);
-        ia.om.op_analysis_port.connect(scb.op_fifo.analysis_export);
+        oa.om.op_analysis_port.connect(scb.op_fifo.analysis_export);
         // ia.im.ip_analysis_port.connect(sub.analysis_export);
-    endfunction 
+    endfunction
 
 endclass

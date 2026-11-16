@@ -6,7 +6,7 @@ class op_agent extends uvm_agent;
         super.new(name,parent);
     endfunction
 
-    ip_mon om;
+    op_mon om;
     fpu_cfg cfg;
 
     function void build_phase(uvm_phase phase);
@@ -15,5 +15,5 @@ class op_agent extends uvm_agent;
             `uvm_fatal(get_type_name(),"failed to get confgi file")
         om = op_mon::type_id::create("output monitor",this);
     endfunction
-    
+
 endclass

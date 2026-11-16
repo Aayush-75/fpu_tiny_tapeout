@@ -18,14 +18,14 @@ class ip_agent extends uvm_agent;
         im = ip_mon::type_id::create("input monitor",this);
         if(cfg.ip_agent==UVM_ACTIVE)
         begin
-            drv = my_Driver::type_id::create("drive",this);
+            drv = my_driver::type_id::create("drive",this);
             sqr = my_sequencer::type_id::create("sequencer",this);
         end
     endfunction
 
-    function void conncet_phase(uvm_phase phase);
-        super.conncet_phase(phase);
+    function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
         drv.seq_item_port.connect(sqr.seq_item_export);
-    endfunction 
+    endfunction
 
 endclass

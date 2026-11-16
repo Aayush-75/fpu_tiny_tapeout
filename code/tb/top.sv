@@ -1,6 +1,7 @@
-`include "pkg.sv"
 `include "interface.sv"
-`include "../rtl/project.sv"
+`include "pkg.sv"
+`include "../rtl/project.v"
+`include "../rtl/fpu_core.v"
 
 module top;
 

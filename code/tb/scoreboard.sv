@@ -1,4 +1,4 @@
-class scorboard extends uvm_scorebaord;
+class scoreboard extends uvm_scoreboard;
 
     `uvm_component_utils(scoreboard)
 
@@ -17,7 +17,7 @@ class scorboard extends uvm_scorebaord;
     bit p_start;
     bit p_busy;
 
-    biy operation_complete;
+    bit operation_complete;
 
     bit [15:0]a;
     bit [15:0]b;
@@ -25,7 +25,7 @@ class scorboard extends uvm_scorebaord;
 
     real opa;
     real opb;
-    real real_result
+    real real_result;
 
     bit [1:0]write_ptr;
     bit read_ptr;
@@ -40,23 +40,23 @@ class scorboard extends uvm_scorebaord;
         op_fifo = new("output fifo",this);
     endfunction
 
-    task run_phse(uvm_phase phase);
-        forever 
+    task run_phase(uvm_phase phase);
+        forever
         begin
             ip_fifo.get(ip);
             op_fifo.get(op);
-            `uvm_info(get_type_name(),$sformtf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",$time,ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),UVM_NONE)
             ref_task();
-            chekk();    
+            chekk();
         end
     endtask
 
     task ref_task();
         if(ip.rst_n==0)
         begin
-            uo_out = 0;
-            uio_out = 0;
-            uio_oe = 0;
+            ip.uo_out = 0;
+            ip.uio_out = 0;
+            ip.uio_oe = 0;
             p_write_en = 0;
             p_read_en = 0;
             p_start = 0;
@@ -115,19 +115,19 @@ class scorboard extends uvm_scorebaord;
                         operation_complete = 1;
                         if(a[15]==1'b0)
                         begin
-                            opa = ((2.0**(a[14:10]-15))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
+                            opa = ((2.0**(int'(a[14:10]-15)))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
                         end
                         else if(a[15]==1'b1)
                         begin
-                            opa = -((2.0**(a[14:10]-15))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
+                            opa = -((2.0**(int'(a[14:10]-15)))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
                         end
                         if(b[15]==1'b0)
                         begin
-                            opb = ((2.0**(b[14:10]-15))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
+                            opb = ((2.0**(int'(b[14:10]-15)))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
                         end
                         else if(b[15]==1'b1)
                         begin
-                            opb = ((2.0**(b[14:10]-15))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
+                            opb = -((2.0**(int'(b[14:10]-15)))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
                         end
                         if(ip.ui_in[3]==0)
                         begin
@@ -148,10 +148,10 @@ class scorboard extends uvm_scorebaord;
             else if((p_write_en==0) && (ip.ui_in[0]==1) && (ip.uo_out[0]==0) && (!operation_complete))
             begin
                 case(write_ptr)
-                    0: a[7:0] = uio_in;
-                    1: a[15:8] = uio_in;
-                    2: b[7:0] = uio_in;
-                    3: b[15:8] = uio_in;
+                    0: a[7:0] = ip.uio_in;
+                    1: a[15:8] = ip.uio_in;
+                    2: b[7:0] = ip.uio_in;
+                    3: b[15:8] = ip.uio_in;
                 endcase
                 if(write_ptr==3)
                 begin
@@ -170,7 +170,7 @@ class scorboard extends uvm_scorebaord;
                     1: ip.uio_out = result[15:8];
                 endcase
                 read_ptr++;
-            end 
+            end
         end
         p_write_en = ip.ui_in[0];
         p_read_en = ip.ui_in[1];
@@ -178,19 +178,23 @@ class scorboard extends uvm_scorebaord;
         operation_complete = 0;
     endtask
 
-    task checkk();
+    task chekk();
         if((ip.uo_out==op.uo_out) && (op.uio_out==ip.uio_out) && (op.uio_oe==ip.uio_oe))
+        begin
             PASS++;
-            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------PASS-------------------",$time),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("PASS = %0d",PASS),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------PASS-------------------",$time),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("PASS = %0d",PASS),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),UVM_NONE)
+        end
         else
+        begin
             FAIL++;
-            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------FAIL-------------------",$time),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("FAIL = %0d",FAIL),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),uvm_none)
-            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),uvm_none)
+            `uvm_info(get_type_name(),$sformatf("[%0t]-----------------FAIL-------------------",$time),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("FAIL = %0d",FAIL),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),UVM_NONE)
+        end
     endtask
 
     function automatic logic [15:0] real_to_fp16(real val);
@@ -198,31 +202,31 @@ class scorboard extends uvm_scorebaord;
     logic        sign;
     logic [10:0] exp64;
     logic [51:0] frac64;
-    
+
     logic [4:0]  exp16;
     logic [9:0]  frac16;
     int          true_exp;
 
     fp64_bits = $realtobits(val);
-    
+
     sign   = fp64_bits[63];
     exp64  = fp64_bits[62:52];
     frac64 = fp64_bits[51:0];
-    
-    true_exp = int'(exp64) - 1023; 
+
+    true_exp = int'(exp64) - 1023;
 
     // overflow and underflow
-    if ((exp64 == 11'h000) || (exp64 == 11'h7FF) || (true_exp > 15) || (true_exp < -14)) 
+    if ((exp64 == 11'h000) || (exp64 == 11'h7FF) || (true_exp > 15) || (true_exp < -14))
     begin
         exp16  = 5'h00;
         frac16 = 10'h000;
-    end 
-    else 
+    end
+    else
     begin
         //Apply FP16 bias (15) to the true exponent
         exp16  = 5'(true_exp + 15);
         //Truncate the 52-bit fraction down to 10 bits
-        frac16 = frac64[51:42]; 
+        frac16 = frac64[51:42];
     end
     return {sign, exp16, frac16};
 endfunction
