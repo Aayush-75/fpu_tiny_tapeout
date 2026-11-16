@@ -71,9 +71,9 @@ class scorboard extends uvm_scorebaord;
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.ui_out[0] = 0;
-                        ip.ui_out[1] = 1;
-                        ip.ui_out[2] = 0;
+                        ip.uo_out[0] = 0;
+                        ip.uo_out[1] = 1;
+                        ip.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         result = b;
@@ -83,9 +83,9 @@ class scorboard extends uvm_scorebaord;
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.ui_out[0] = 0;
-                        ip.ui_out[1] = 1;
-                        ip.ui_out[2] = 0;
+                        ip.uo_out[0] = 0;
+                        ip.uo_out[1] = 1;
+                        ip.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
@@ -95,9 +95,9 @@ class scorboard extends uvm_scorebaord;
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.ui_out[0] = 0;
-                        ip.ui_out[1] = 1;
-                        ip.ui_out[2] = 1;
+                        ip.uo_out[0] = 0;
+                        ip.uo_out[1] = 1;
+                        ip.uo_out[2] = 1;
                         p_busy = 0;
                         operation_complete = 1;
                         result = 0;
@@ -107,9 +107,9 @@ class scorboard extends uvm_scorebaord;
                 begin
                     if(busy_cnt==3)
                     begin
-                        ip.ui_out[0] = 0;
-                        ip.ui_out[1] = 1;
-                        ip.ui_out[2] = 1;
+                        ip.uo_out[0] = 0;
+                        ip.uo_out[1] = 1;
+                        ip.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         if(a[15]==1'b0)
@@ -158,12 +158,13 @@ class scorboard extends uvm_scorebaord;
                 end
                 write_ptr++;
             end
-            else if((p_read_en==0) && (ip.ui_in[1]==1) && (ip.uo_out==0))
+            else if((p_read_en==0) && (ip.ui_in[1]==1) && (ip.uo_out[0]==0))
             begin
                 case(read_ptr)
                     0: ip.uio_out = result[7:0];
                     1: ip.uio_out = result[15:8];
                 endcase
+                read_ptr++;
             end 
             if((p_start==0) && (ip.ui_in[2]==1) && (ip.uo_out[3]==1) && (ip.uo_out[0]==0) && (!operation_complete))
             begin
@@ -178,6 +179,9 @@ class scorboard extends uvm_scorebaord;
 
     task checkk();
         if((ip.uo_out==op.uo_out) && (op.uio_out==ip.uio_out))
+            PASS++;
+        else
+            FAIL++;
     endtask
 
     function automatic logic [15:0] real_to_fp16(real val);
