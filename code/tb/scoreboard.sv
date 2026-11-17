@@ -77,7 +77,19 @@ class scoreboard extends uvm_scoreboard;
             begin
                 ip.uo_out[0] = 1;
                 busy_cnt++;
-                if(a[14:0]==0)
+                if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
+                begin
+                    if(busy_cnt==2)
+                    begin
+                        ip.uo_out[0] = 0;
+                        ip.uo_out[1] = 1;
+                        ip.uo_out[2] = 1;
+                        p_busy = 0;
+                        operation_complete = 1;
+                        result = 0;
+                    end
+                end
+                else if(a[14:0]==0)
                 begin
                     if(busy_cnt==2)
                     begin
@@ -99,18 +111,6 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
-                    end
-                end
-                else if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
-                begin
-                    if(busy_cnt==2)
-                    begin
-                        ip.uo_out[0] = 0;
-                        ip.uo_out[1] = 1;
-                        ip.uo_out[2] = 1;
-                        p_busy = 0;
-                        operation_complete = 1;
-                        result = 0;
                     end
                 end
                 else
@@ -179,6 +179,14 @@ class scoreboard extends uvm_scoreboard;
                     1: ip.uio_out = result[15:8];
                 endcase
                 read_ptr++;
+            end
+            if((ip.ui_in[1]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            begin
+                ip.uio_oe = 8'hFF;
+            end
+            else
+            begin
+                ip.uio_oe = 8'h00;
             end
           p_write_en = ip.ui_in[0];
           p_read_en = ip.ui_in[1];
