@@ -25,7 +25,7 @@ class fpu_subscriber extends uvm_subscriber # (seq_item);
     n:coverpoint sub.uo_out[3] {bins ui_out3 []={0,1};}
     o:coverpoint sub.uo_out[7:4] {bins wr_ptr [] ={[3:0]};}
     p:coverpoint sub.uio_out ;
-    q:coverpoint sub.uio_oe {bins oe [] ={0,15};}
+   q:coverpoint sub.uio_oe {bins oe [] ={0,255};}
 
    r: cross k,l {
     bins busy_ready_01 = binsof(k) intersect {0} && binsof(l) intersect {1};
