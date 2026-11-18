@@ -2,12 +2,12 @@ class fpu_subscriber extends uvm_subscriber # (seq_item);
  `uvm_component_utils (fpu_subscriber)
 
   seq_item sub;
- 
+
 
   covergroup cg ;
     //input coverage
     a:coverpoint sub.rst_n {bins rst[]= {0,1};}
-    b:coverpoint sub.ena {bins enable [] ={0,1};} 
+    b:coverpoint sub.ena {bins enable [] ={0,1};}
     c:coverpoint sub.ui_in[0] {bins ui_in0 [] ={0,1};}
     d:coverpoint sub.ui_in[1] {bins ui_in1 []={0,1};}
     e:coverpoint sub.ui_in[2] {bins ui_in2 [] ={0,1};}
@@ -17,7 +17,7 @@ class fpu_subscriber extends uvm_subscriber # (seq_item);
 
    i:cross c,d;
    j:cross e,f;
-  
+
   // output coverage
     k:coverpoint sub.uo_out[0] {bins ui_out0 [] ={0,1};}
     l:coverpoint sub.uo_out[1] {bins ui_out1 []={0,1};}
@@ -39,16 +39,15 @@ class fpu_subscriber extends uvm_subscriber # (seq_item);
 
  t: cross n,o {
     bins ready_wr_ptr = binsof(o) intersect{[2:0]} && binsof (n) intersect {0};
-     bins ready_wr_ptr_1 = binsof(o) intersect{3} && binsof (n) intersect {1}; }    
+     bins ready_wr_ptr_1 = binsof(o) intersect{3} && binsof (n) intersect {1}; }
 
   endgroup
- 
+
  function new(string name="fpu_subscriber",uvm_component parent);
 super.new(name,parent);
  cg=new();
-`uvm_info(get_name,"[subscriber]:INPUT RECIEVED",UVM_NONE)
 endfunction
- 
+
 function void report_phase(uvm_phase phase);
 super.report_phase(phase);
     `uvm_info(get_name,$sformatf(" COVERAGE = %0f",cg.get_coverage()),UVM_NONE)
@@ -80,7 +79,7 @@ super.report_phase(phase);
 
 endfunction
 
- 
+
 function void write(seq_item t);
 sub=t;
 cg.sample();
