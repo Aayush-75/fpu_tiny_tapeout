@@ -80,6 +80,23 @@ class normal_addition extends my_sequence;
             {
                 ui_in[3] == 0;
             }
+            //eact values
+            if(count==0)
+            {
+                uio_in == 8'h00;
+            }
+            else if(count==2)
+            {
+                uio_in == 8'h44;
+            }
+            else if(count==4)
+            {
+                uio_in == 8'h00;
+            }
+            else if(count==6)
+            {
+                uio_in == 8'h45;
+            }
         };
         finish_item(req);
     endtask

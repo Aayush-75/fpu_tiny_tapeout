@@ -67,8 +67,8 @@ class normal_addition_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_addition::type_id::create("seq");
-        repeat(13) seq2.start(environment.ia.sqr);
-        #500ns;
+        repeat(15) seq2.start(environment.ia.sqr);
+        #40ns;
         phase.drop_objection(this);
     endtask
 
