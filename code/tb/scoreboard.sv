@@ -11,6 +11,7 @@ class scoreboard extends uvm_scoreboard;
 
     seq_item ip;
     seq_item op;
+    seq_item refv;
 
     bit p_write_en;
     bit p_read_en;
@@ -38,6 +39,7 @@ class scoreboard extends uvm_scoreboard;
         super.build_phase(phase);
         ip_fifo = new("input fifo",this);
         op_fifo = new("output fifo",this);
+        refv = seq_item::type_id::create("ref var for scb");
     endfunction
 
     task run_phase(uvm_phase phase);
@@ -46,9 +48,9 @@ class scoreboard extends uvm_scoreboard;
             ip_fifo.get(ip);
             op_fifo.get(op);
             `uvm_info(get_type_name(),$sformatf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",$time,ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_start = %0b start = %0b ready = %0b busy = %0b op_comp = %0b",p_start,ip.ui_in[2],ip.uo_out[3],ip.uo_out[0],operation_complete),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b op_comp = %0b",p_write_en,ip.ui_in[0],ip.uo_out[0],operation_complete),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],ip.uo_out[0]),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_start = %0b start = %0b ready = %0b busy = %0b op_comp = %0b",p_start,ip.ui_in[2],refv.uo_out[3],refv.uo_out[0],operation_complete),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b op_comp = %0b",p_write_en,ip.ui_in[0],refv.uo_out[0],operation_complete),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],refv.uo_out[0]),UVM_NONE)
             ref_task();
             chekk();
             $display("");
@@ -58,9 +60,12 @@ class scoreboard extends uvm_scoreboard;
     task ref_task();
         if(ip.rst_n==0)
         begin
-            ip.uo_out = 0;
-            ip.uio_out = 0;
-            ip.uio_oe = 0;
+            // ip.uo_out = 0;
+            // ip.uio_out = 0;
+            // ip.uio_oe = 0;
+            refv.uo_out = 0;
+            refv.uio_out = 0;
+            refv.uio_oe = 0;
             p_write_en = 0;
             p_read_en = 0;
             p_start = 0;
@@ -72,18 +77,23 @@ class scoreboard extends uvm_scoreboard;
         end
         else
         begin
-            ip.uo_out[7:4] = {2'b0,write_ptr};
+            // ip.uo_out[7:4] = {2'b0,write_ptr};
+            refv.uo_out[7:4] = {2'b0,write_ptr};
             if(p_busy==1)
             begin
-                ip.uo_out[0] = 1;
+                // ip.uo_out[0] = 1;
+                refv.uo_out[0] = 1;
                 busy_cnt++;
                 if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.uo_out[0] = 0;
-                        ip.uo_out[1] = 1;
-                        ip.uo_out[2] = 1;
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 1;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 1;
                         p_busy = 0;
                         operation_complete = 1;
                         result = 0;
@@ -93,9 +103,12 @@ class scoreboard extends uvm_scoreboard;
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.uo_out[0] = 0;
-                        ip.uo_out[1] = 1;
-                        ip.uo_out[2] = 0;
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 0;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         result = b;
@@ -105,9 +118,12 @@ class scoreboard extends uvm_scoreboard;
                 begin
                     if(busy_cnt==2)
                     begin
-                        ip.uo_out[0] = 0;
-                        ip.uo_out[1] = 1;
-                        ip.uo_out[2] = 0;
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 0;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
@@ -117,9 +133,12 @@ class scoreboard extends uvm_scoreboard;
                 begin
                     if(busy_cnt==3)
                     begin
-                        ip.uo_out[0] = 0;
-                        ip.uo_out[1] = 1;
-                        ip.uo_out[2] = 0;
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 0;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
                         if(a[15]==1'b0)
@@ -150,11 +169,11 @@ class scoreboard extends uvm_scoreboard;
                     end
                 end
             end
-            if((p_start==0) && (ip.ui_in[2]==1) && (ip.uo_out[3]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
                 p_busy=1;
             end
-            else if((p_write_en==0) && (ip.ui_in[0]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
                 case(write_ptr)
                     0: a[7:0] = ip.uio_in;
@@ -164,29 +183,39 @@ class scoreboard extends uvm_scoreboard;
                 endcase
                 if(write_ptr==3)
                 begin
-                    ip.uo_out[3] = 1'b1;
+                    // ip.uo_out[3] = 1'b1;
+                    refv.uo_out[3] = 1'b1;
                 end
                 else
                 begin
-                    ip.uo_out[3] = 1'b0;
+                    // ip.uo_out[3] = 1'b0;
+                    refv.uo_out[3] = 1'b0;
                 end
                 write_ptr++;
             end
-            else if((p_read_en==0) && (ip.ui_in[1]==1) && (ip.uo_out[0]==0))
+            else if((p_read_en==0) && (ip.ui_in[1]==1) && (refv.uo_out[0]==0))
             begin
                 case(read_ptr)
-                    0: ip.uio_out = result[7:0];
-                    1: ip.uio_out = result[15:8];
+                    0: begin
+                        // ip.uio_out = result[7:0];
+                        refv.uio_out = result[7:0];
+                    end
+                    1: begin
+                        // ip.uio_out = result[15:8];
+                        refv.uio_out = result[15:8];
+                    end
                 endcase
                 read_ptr++;
             end
-            if((ip.ui_in[1]==1) && (ip.uo_out[0]==0) && (!operation_complete))
+            if((ip.ui_in[1]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
-                ip.uio_oe = 8'hFF;
+                // ip.uio_oe = 8'hFF;
+                refv.uio_oe = 8'hFF;
             end
             else
             begin
-                ip.uio_oe = 8'h00;
+                // ip.uio_oe = 8'h00;
+                refv.uio_oe = 8'h00;
             end
           p_write_en = ip.ui_in[0];
           p_read_en = ip.ui_in[1];
@@ -196,13 +225,13 @@ class scoreboard extends uvm_scoreboard;
     endtask
 
     task chekk();
-        if((ip.uo_out==op.uo_out) && (op.uio_out==ip.uio_out) && (op.uio_oe==ip.uio_oe))
+        if((refv.uo_out==op.uo_out) && (refv.uio_out==op.uio_out) && (refv.uio_oe==op.uio_oe))
         begin
             PASS++;
             `uvm_info(get_type_name(),$sformatf("[%0t]-----------------PASS-------------------",$time),UVM_NONE)
             `uvm_info(get_type_name(),$sformatf("PASS = %0d",PASS),UVM_NONE)
             `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("REF: refv.uo_out = %0b | refv.uio_out = %0b | refv.uio_oe = %0b",refv.uo_out,refv.uio_out,refv.uio_oe),UVM_NONE)
         end
         else
         begin
@@ -210,7 +239,7 @@ class scoreboard extends uvm_scoreboard;
             `uvm_info(get_type_name(),$sformatf("[%0t]-----------------FAIL-------------------",$time),UVM_NONE)
             `uvm_info(get_type_name(),$sformatf("FAIL = %0d",FAIL),UVM_NONE)
             `uvm_info(get_type_name(),$sformatf("DUT: op.uo_out = %0b | op.uio_out = %0b | op.uio_oe = %0b",op.uo_out,op.uio_out,op.uio_oe),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("REF: ip.uo_out = %0b | ip.uio_out = %0b | ip.uio_oe = %0b",ip.uo_out,ip.uio_out,ip.uio_oe),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("REF: refv.uo_out = %0b | refv.uio_out = %0b | refv.uio_oe = %0b",refv.uo_out,refv.uio_out,refv.uio_oe),UVM_NONE)
         end
     endtask
 
@@ -249,3 +278,4 @@ class scoreboard extends uvm_scoreboard;
 endfunction
 
 endclass
+

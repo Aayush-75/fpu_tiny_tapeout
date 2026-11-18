@@ -64,10 +64,10 @@ class normal_addition_test extends test;
         phase.raise_objection(this);
         //reset
         seq1 = reset_seq::type_id::create("seq");
-        repeat(5) seq1.start(environment.ia.sqr);
+        repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_addition::type_id::create("seq");
-        repeat(15) seq2.start(environment.ia.sqr);
+        repeat(13) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask

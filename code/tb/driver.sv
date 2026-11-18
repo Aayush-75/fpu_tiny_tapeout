@@ -21,7 +21,7 @@ class my_driver extends uvm_driver#(seq_item);
     endfunction
 
     task run_phase(uvm_phase phase);
-        @(intrf.drv_cb);
+        repeat(1) @(intrf.drv_cb);
         forever
         begin
             seq_item_port.get_next_item(req);

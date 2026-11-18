@@ -28,9 +28,9 @@ class ip_mon extends uvm_monitor;
         forever
         begin
             req = seq_item::type_id::create("seq");
-            req.rst_n = intrf.ip_mon_cb.rst_n;
-            req.ena = intrf.ip_mon_cb.ena;
-            req.ui_in = intrf.ip_mon_cb.ui_in;
+            req.rst_n = intrf.ip_mon_mod.ip_mon_cb.rst_n;
+            req.ena = intrf.ip_mon_mod.ip_mon_cb.ena;
+            req.ui_in = intrf.ip_mon_mod.ip_mon_cb.ui_in;
             req.uio_in = intrf.ip_mon_mod.ip_mon_cb.uio_in;
             ip_analysis_port.write(req);
             @(intrf.ip_mon_cb);
