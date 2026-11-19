@@ -231,7 +231,7 @@ class scoreboard extends uvm_scoreboard;
             begin
                 p_write_operand = 1;
             end
-            else if((p_read_en==0) && (ip.ui_in[1]==1) && (refv.uo_out[0]==0))
+            else if((p_read_en==1) && (ip.ui_in[1]==0) && (refv.uo_out[0]==0))
             begin
                 read_ptr++;
             end
