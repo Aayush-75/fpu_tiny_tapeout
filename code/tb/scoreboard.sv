@@ -17,8 +17,10 @@ class scoreboard extends uvm_scoreboard;
     bit p_read_en;
     bit p_start;
     bit p_busy;
+    bit p_write_operand;
 
     bit operation_complete;
+    bit sign;
 
     bit [15:0]a;
     bit [15:0]b;
@@ -70,13 +72,38 @@ class scoreboard extends uvm_scoreboard;
             p_read_en = 0;
             p_start = 0;
             p_busy = 0;
+            p_write_operand = 0;
             result = 0;
             a = 0;
             b = 0;
             operation_complete = 0;
+            sign = 0;
         end
         else
         begin
+            if(p_write_operand==1)
+            begin
+                 case(write_ptr)
+                    0: a[7:0] = ip.uio_in;
+                    1: a[15:8] = ip.uio_in;
+                    2: b[7:0] = ip.uio_in;
+                    3: b[15:8] = ip.uio_in;
+                 endcase
+                 $display("a is %0h %0b",a,a);
+                 $display("b is %0h %0b",b,b);
+                 p_write_operand=0;
+                 if((write_ptr)==3)
+                 begin
+                     // ip.uo_out[3] = 1'b1;
+                     refv.uo_out[3] = 1'b1;
+                 end
+                 else
+                  begin
+                     // ip.uo_out[3] = 1'b0;
+                      refv.uo_out[3] = 1'b0;
+                  end
+                  write_ptr++;
+            end
             // ip.uo_out[7:4] = {2'b0,write_ptr};
             refv.uo_out[7:4] = {2'b0,write_ptr};
             if(p_busy==1)
@@ -86,7 +113,7 @@ class scoreboard extends uvm_scoreboard;
                 busy_cnt++;
                 if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
                 begin
-                    if(busy_cnt==2)
+                    if(busy_cnt==3)
                     begin
                         // ip.uo_out[0] = 0;
                         // ip.uo_out[1] = 1;
@@ -101,7 +128,7 @@ class scoreboard extends uvm_scoreboard;
                 end
                 else if(a[14:0]==0)
                 begin
-                    if(busy_cnt==2)
+                    if(busy_cnt==3)
                     begin
                         // ip.uo_out[0] = 0;
                         // ip.uo_out[1] = 1;
@@ -116,7 +143,7 @@ class scoreboard extends uvm_scoreboard;
                 end
                 else if(b[14:0]==0)
                 begin
-                    if(busy_cnt==2)
+                    if(busy_cnt==3)
                     begin
                         // ip.uo_out[0] = 0;
                         // ip.uo_out[1] = 1;
@@ -131,7 +158,7 @@ class scoreboard extends uvm_scoreboard;
                 end
                 else
                 begin
-                    if(busy_cnt==3)
+                    if(busy_cnt==4)
                     begin
                         // ip.uo_out[0] = 0;
                         // ip.uo_out[1] = 1;
@@ -157,13 +184,15 @@ class scoreboard extends uvm_scoreboard;
                         begin
                             opb = -((2.0**(int'(b[14:10]-15)))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
                         end
-                        if(ip.ui_in[3]==0)
+                        if(sign==0)
                         begin
                             real_result = opa + opb;
+                            sign = 0;
                         end
                         else
                         begin
                             real_result = opa - opb;
+                            sign = 0;
                         end
                         result = real_to_fp16(real_result);
                     end
@@ -172,26 +201,11 @@ class scoreboard extends uvm_scoreboard;
             if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
                 p_busy=1;
+                sign = ip.ui_in[3];
             end
             else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
-                case(write_ptr)
-                    0: a[7:0] = ip.uio_in;
-                    1: a[15:8] = ip.uio_in;
-                    2: b[7:0] = ip.uio_in;
-                    3: b[15:8] = ip.uio_in;
-                endcase
-                if(write_ptr==3)
-                begin
-                    // ip.uo_out[3] = 1'b1;
-                    refv.uo_out[3] = 1'b1;
-                end
-                else
-                begin
-                    // ip.uo_out[3] = 1'b0;
-                    refv.uo_out[3] = 1'b0;
-                end
-                write_ptr++;
+                p_write_operand = 1;
             end
             else if((p_read_en==0) && (ip.ui_in[1]==1) && (refv.uo_out[0]==0))
             begin

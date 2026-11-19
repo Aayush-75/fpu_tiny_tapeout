@@ -41,7 +41,7 @@ class normal_addition extends my_sequence;
     endfunction
 
     task body();
-        needed_count=13;
+        needed_count=14;
         uvm_config_db#(longint)::set(null,"*","count",needed_count);
         req = seq_item::type_id::create("seq");
         start_item(req);
@@ -58,7 +58,7 @@ class normal_addition extends my_sequence;
                 ui_in[0] == 0;
             }
             //read_en
-            if((count==11) || (count==13))
+            if((count==12) || (count==14))
             {
                 ui_in[1] == 1;
             }
@@ -81,19 +81,19 @@ class normal_addition extends my_sequence;
                 ui_in[3] == 0;
             }
             //eact values
-            if(count==0)
+            if((count==1))
             {
                 uio_in == 8'h00;
             }
-            else if(count==2)
+            else if((count==3))
             {
                 uio_in == 8'h44;
             }
-            else if(count==4)
+            else if((count==5))
             {
                 uio_in == 8'h00;
             }
-            else if(count==6)
+            else if((count==7))
             {
                 uio_in == 8'h45;
             }
