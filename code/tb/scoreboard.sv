@@ -80,6 +80,9 @@ class scoreboard extends uvm_scoreboard;
             operation_complete = 0;
             sign = 0;
             store_now=0;
+            read_ptr = 0;
+            write_ptr = 0;
+
         end
         else
         begin
@@ -112,6 +115,7 @@ class scoreboard extends uvm_scoreboard;
             begin
                 if(store_now==1)
                 begin
+                    read_ptr=0;
                     sign = ip.ui_in[3];
                     store_now = 0;
                 end
@@ -214,8 +218,8 @@ class scoreboard extends uvm_scoreboard;
                     end
                 end
             end
-            if(refv.uo_out[0]==0)
-            begin
+            //if(refv.uo_out[0]==0)
+            //begin
                 case(read_ptr)
                     0: begin
                         // ip.uio_out = result[7:0];
@@ -226,7 +230,7 @@ class scoreboard extends uvm_scoreboard;
                         refv.uio_out = result[15:8];
                     end
                 endcase
-            end
+            //end
             if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
                 p_busy = 1;
