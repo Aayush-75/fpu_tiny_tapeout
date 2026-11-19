@@ -117,6 +117,8 @@ class scoreboard extends uvm_scoreboard;
                 end
                 //$display("storing value of sign %0b",sign);
                 // ip.uo_out[0] = 1;
+                refv.uo_out[1] = 0;
+                refv.uo_out[2] = 0;
                 refv.uo_out[0] = 1;
                 busy_cnt++;
                 if(a[14:0]==0)
@@ -132,6 +134,7 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = b;
+                        busy_cnt=0;
                     end
                 end
                 else if(b[14:0]==0)
@@ -147,6 +150,7 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
+                        busy_cnt=0;
                     end
                 end
                 else if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
@@ -162,6 +166,7 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = 0;
+                        busy_cnt=0;
                     end
                 end
                 else
@@ -205,6 +210,7 @@ class scoreboard extends uvm_scoreboard;
                             //sign = 0;
                         end
                         result = real_to_fp16(real_result);
+                        busy_cnt=0;
                     end
                 end
             end
