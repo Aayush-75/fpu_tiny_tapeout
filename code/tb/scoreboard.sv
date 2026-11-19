@@ -115,26 +115,11 @@ class scoreboard extends uvm_scoreboard;
                     sign = ip.ui_in[3];
                     store_now = 0;
                 end
-                $display("storing value of sign %0b",sign);
+                //$display("storing value of sign %0b",sign);
                 // ip.uo_out[0] = 1;
                 refv.uo_out[0] = 1;
                 busy_cnt++;
-                if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
-                begin
-                    if(busy_cnt==3)
-                    begin
-                        // ip.uo_out[0] = 0;
-                        // ip.uo_out[1] = 1;
-                        // ip.uo_out[2] = 1;
-                        refv.uo_out[0] = 0;
-                        refv.uo_out[1] = 1;
-                        refv.uo_out[2] = 1;
-                        p_busy = 0;
-                        operation_complete = 1;
-                        result = 0;
-                    end
-                end
-                else if(a[14:0]==0)
+                if(a[14:0]==0)
                 begin
                     if(busy_cnt==3)
                     begin
@@ -162,6 +147,21 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
+                    end
+                end
+                else if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
+                begin
+                    if(busy_cnt==3)
+                    begin
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 1;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 1;
+                        p_busy = 0;
+                        operation_complete = 1;
+                        result = 0;
                     end
                 end
                 else
