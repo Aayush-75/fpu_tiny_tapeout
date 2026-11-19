@@ -78,7 +78,7 @@ class normal_addition extends my_sequence;
             //opcode
             if(count==7)
             {
-                ui_in[3] == 0;
+                ui_in[3] == 1;
             }
             //eact values
             if((count==1))

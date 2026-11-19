@@ -89,8 +89,8 @@ class scoreboard extends uvm_scoreboard;
                     2: b[7:0] = ip.uio_in;
                     3: b[15:8] = ip.uio_in;
                  endcase
-                 $display("a is %0h %0b",a,a);
-                 $display("b is %0h %0b",b,b);
+                 //$display("a is %0h %0b",a,a);
+                 //$display("b is %0h %0b",b,b);
                  p_write_operand=0;
                  if((write_ptr)==3)
                  begin
@@ -108,6 +108,7 @@ class scoreboard extends uvm_scoreboard;
             refv.uo_out[7:4] = {2'b0,write_ptr};
             if(p_busy==1)
             begin
+                sign = ip.ui_in[3];
                 // ip.uo_out[0] = 1;
                 refv.uo_out[0] = 1;
                 busy_cnt++;
@@ -195,13 +196,22 @@ class scoreboard extends uvm_scoreboard;
                             sign = 0;
                         end
                         result = real_to_fp16(real_result);
+                        case(read_ptr)
+                            0: begin
+                            // ip.uio_out = result[7:0];
+                            refv.uio_out = result[7:0];
+                            end
+                            1: begin
+                            // ip.uio_out = result[15:8];
+                            refv.uio_out = result[15:8];
+                            end
+                        endcase
                     end
                 end
             end
             if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
                 p_busy=1;
-                sign = ip.ui_in[3];
             end
             else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0) && (!operation_complete))
             begin
@@ -209,16 +219,6 @@ class scoreboard extends uvm_scoreboard;
             end
             else if((p_read_en==0) && (ip.ui_in[1]==1) && (refv.uo_out[0]==0))
             begin
-                case(read_ptr)
-                    0: begin
-                        // ip.uio_out = result[7:0];
-                        refv.uio_out = result[7:0];
-                    end
-                    1: begin
-                        // ip.uio_out = result[15:8];
-                        refv.uio_out = result[15:8];
-                    end
-                endcase
                 read_ptr++;
             end
             if((ip.ui_in[1]==1) && (refv.uo_out[0]==0) && (!operation_complete))
