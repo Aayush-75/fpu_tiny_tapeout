@@ -1,9 +1,9 @@
 #for easy modification TOP_FILE = top.sv
 TOP_FILE = top.sv
-TESTNAME = normal_addition_test
+TESTNAME = write_busy_test
 COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 
-.PHONY: all compile sim cov wave clean git start
+.PHONY: all c s cov wave clean git start
 
 .DEFAULT_GOAL := all
 
@@ -15,12 +15,12 @@ start:
 
 # 2. Compile the design
 # Note: Added -kdb for Verdi integration and FSDB dumping support
-compile:
+c:
 	vcs -full64 -sverilog -timescale=1ns/1ps -ntb_opts uvm-1.2 \
 	-debug_access+all -kdb $(COV_FLAGS) -l compile.log $(TOP_FILE)
 
 # 3. Run the Simulation
-sim:
+s:
 	./simv -l $(TESTNAME).log $(COV_FLAGS) +UVM_TESTNAME=$(TESTNAME)
 
 #4. Generate the HTML Coverage Report
