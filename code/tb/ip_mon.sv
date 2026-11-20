@@ -38,3 +38,4 @@ class ip_mon extends uvm_monitor;
     endtask
 
 endclass
+

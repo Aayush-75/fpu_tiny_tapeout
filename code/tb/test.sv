@@ -67,8 +67,33 @@ class normal_addition_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_addition::type_id::create("seq");
-        repeat(120) seq2.start(environment.ia.sqr);
+        repeat(170) seq2.start(environment.ia.sqr);
         #40ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class write_busy_test extends test;
+
+    `uvm_component_utils(write_busy_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    write_busy seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = write_busy::type_id::create("seq");
+        repeat(100) seq2.start(environment.ia.sqr);
+        #500ns;
         phase.drop_objection(this);
     endtask
 

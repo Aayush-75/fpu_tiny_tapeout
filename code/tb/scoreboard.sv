@@ -57,6 +57,7 @@ class scoreboard extends uvm_scoreboard;
             ref_task();
             chekk();
             $display("");
+            $display("");
         end
     endtask
 
@@ -82,7 +83,6 @@ class scoreboard extends uvm_scoreboard;
             store_now=0;
             read_ptr = 0;
             write_ptr = 0;
-
         end
         else
         begin
@@ -139,6 +139,7 @@ class scoreboard extends uvm_scoreboard;
                         operation_complete = 1;
                         result = b;
                         busy_cnt=0;
+                        $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
                 else if(b[14:0]==0)
@@ -155,6 +156,7 @@ class scoreboard extends uvm_scoreboard;
                         operation_complete = 1;
                         result = a;
                         busy_cnt=0;
+                        $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
                 else if((a[14:10]==0) || (a[14:10]==31) || (b[14:10]==0) || (b[14:10]==31))
@@ -171,6 +173,7 @@ class scoreboard extends uvm_scoreboard;
                         operation_complete = 1;
                         result = 0;
                         busy_cnt=0;
+                        $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
                 else
@@ -203,18 +206,20 @@ class scoreboard extends uvm_scoreboard;
                         end
                         if(sign==0)
                         begin
-                            $display("using sign %0b",sign);
+                            //$display("addition");
                             real_result = opa + opb;
                             //sign = 0;
                         end
                         else
                         begin
-                            $display("using sign %0b",sign);
+                            //$display("subtraction");
                             real_result = opa - opb;
                             //sign = 0;
                         end
+                        //$display("result is: %0f",real_result);
                         result = real_to_fp16(real_result);
                         busy_cnt=0;
+                        //$display("4 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
             end
@@ -245,7 +250,7 @@ class scoreboard extends uvm_scoreboard;
             begin
                 read_ptr++;
             end
-            if((ip.ui_in[1]==1) && (refv.uo_out[0]==0) && (!operation_complete))
+            if((ip.ui_in[1]==1) && (refv.uo_out[0]==0))
             begin
                 // ip.uio_oe = 8'hFF;
                 refv.uio_oe = 8'hFF;
@@ -292,6 +297,7 @@ class scoreboard extends uvm_scoreboard;
     int          true_exp;
 
     fp64_bits = $realtobits(val);
+    //$display("fp64 fomrat bits are %0b",fp64_bits);
 
     sign   = fp64_bits[63];
     exp64  = fp64_bits[62:52];
@@ -311,6 +317,7 @@ class scoreboard extends uvm_scoreboard;
         exp16  = 5'(true_exp + 15);
         //Truncate the 52-bit fraction down to 10 bits
         frac16 = frac64[51:42];
+        //$display("frac16_mentissa: %0b",frac16);
     end
     return {sign, exp16, frac16};
 endfunction
