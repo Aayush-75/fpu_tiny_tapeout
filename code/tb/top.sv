@@ -2,6 +2,7 @@
 `include "pkg.sv"
 `include "../rtl/project.v"
 `include "../rtl/fpu_core.v"
+`include "checker.sv"
 
 module top;
 
@@ -11,6 +12,18 @@ module top;
     bit clk;
 
     fpu_if DUV_IF(clk);
+
+	bind syn_fifo tt_um_project_fpu fpu_assertions u_assert
+	(
+	.clk(clk),
+    .rst_n(DUV_IF.rst_n),
+    .ui_in(DUV_IF.ui_in),
+    .uio_in(DUV_IF.uio_in),
+    .uio_out(DUV_IF.uio_out),
+    .uio_oe(DUV_IF.uio_oe),
+    .ena(DUV_IF.ena),
+    .uo_out(DUV_IF.uo_out)
+	);
 
     tt_um_project_fpu#(.EXP_W(`EXP_W),.MAN_W(`MAN_W))
     m1 (
