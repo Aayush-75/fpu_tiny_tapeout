@@ -27,9 +27,12 @@ class scoreboard extends uvm_scoreboard;
     bit [15:0]b;
     bit [15:0]result;
 
-    real opa;
-    real opb;
-    real real_result;
+    bit [11:0]tmp_result;
+    bit [10:0]ma,mb;
+
+    int ea,eb,lead_zero;
+    bit [4:0]ediff;
+    bit res_sign;
 
     bit [1:0]write_ptr;
     bit read_ptr;
@@ -103,11 +106,11 @@ class scoreboard extends uvm_scoreboard;
                      refv.uo_out[3] = 1'b1;
                  end
                  else
-                  begin
+                begin
                      // ip.uo_out[3] = 1'b0;
                       refv.uo_out[3] = 1'b0;
-                  end
-                  write_ptr++;
+                end
+                write_ptr++;
             end
             // ip.uo_out[7:4] = {2'b0,write_ptr};
             refv.uo_out[7:4] = {2'b0,write_ptr};
@@ -188,36 +191,144 @@ class scoreboard extends uvm_scoreboard;
                         refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
-                        if(a[15]==1'b0)
-                        begin
-                            opa = ((2.0**(int'(a[14:10]-15)))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
+                        ea = a[14:10];
+                        eb = b[14:10];
+                        ma = {1'b1,a[9:0]};
+                        mb = {1'b1,b[9:0]};
+                        ediff = ((ea-eb)>0)?(ea-eb):(eb-ea);
+                        if(ea>eb)
+                        begin  
+                            mb = mb>>ediff;
+                            eres = ea;
+                            res_sign = a[15];
+                            if(sign==0) 
+                            begin
+                                if(a[15]==b[15])
+                                begin
+                                    tmp_result = mb+ma;
+                                end
+                                else
+                                begin
+                                    tmp_result = ma-mb;
+                                end
+                            end
+                            else //means subtarction
+                            begin
+                                if(a[15]==b[15])
+                                begin
+                                    tmp_result = ma-mb;
+                                end
+                                else
+                                begin
+                                    tmp_result = mb+ma;
+                                end
+                            end
+                            if (tmp_result[11] == 1)
+                            begin
+                                tmp_result = tmp_result >> 1; 
+                                eres = eres + 1;
+                                result = (eres >= 31) ? {res_sign, 5'h1F, 10'd0} : {res_sign, eres[4:0], tmp_result[9:0]};
+                            end
+                            else
+                            begin
+                                lead_zero = 0;               
+                                while ((tmp_result[10] != 1) && (lead_zero != 10))
+                                begin
+                                    tmp_result = tmp_result << 1;
+                                    lead_zero++;
+                                end
+                                eres = eres - lead_zero;     
+                                if (eres > 0)
+                                    result = {res_sign, eres[4:0], tmp_result[9:0]};
+                                else
+                                    result = 0;
+                            end
                         end
-                        else if(a[15]==1'b1)
+                        else if (eb > ea)
                         begin
-                            opa = -((2.0**(int'(a[14:10]-15)))*((1.0)+(a[9]/2.0)+(a[8]/4.0)+(a[7]/8.0)+(a[6]/16.0)+(a[5]/32.0)+(a[4]/64.0)+(a[3]/128.0)+(a[2]/256.0)+(a[1]/512.0)+(a[0]/1024.0)));
+                            ma = ma >> ediff;
+                            eres = eb;             
+                            res_sign = b[15] ^ sign; 
+
+                            if (sign == 0) 
+                            begin
+                                if (a[15] == b[15])
+                                    tmp_result = ma + mb;
+                                else
+                                    tmp_result = mb - ma; 
+                            end
+                            else 
+                            begin
+                                if (a[15] == b[15])
+                                    tmp_result = mb - ma; 
+                                else
+                                    tmp_result = ma + mb;
+                            end
+                            if (tmp_result[11] == 1)
+                            begin
+                                tmp_result = tmp_result >> 1;
+                                eres = eres + 1;
+                                result = (eres >= 31) ? {res_sign, 5'h1F, 10'd0} : {res_sign, eres[4:0], tmp_result[9:0]};
+                            end
+                            else
+                            begin
+                                lead_zero = 0;
+                                while (tmp_result[10] != 1 && (lead_zero != 10))
+                                begin
+                                    tmp_result = tmp_result << 1;
+                                    lead_zero++;
+                                end
+                                eres = eres - lead_zero;
+                                if (eres > 0)
+                                    result = {res_sign, eres[4:0], tmp_result[9:0]};
+                                else
+                                    result = 0;
+                            end
                         end
-                        if(b[15]==1'b0)
+                        else 
                         begin
-                            opb = ((2.0**(int'(b[14:10]-15)))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
+                            eres = ea;
+                            if ((sign == 0 && a[15] == b[15]) || (sign == 1 && a[15] != b[15]))
+                            begin
+                                tmp_result = ma + mb;
+                                res_sign = a[15];
+                            end
+                            else
+                            begin
+                                if (ma >= mb)
+                                begin
+                                    tmp_result = ma - mb;
+                                    res_sign = a[15];
+                                end
+                                else
+                                begin
+                                    tmp_result = mb - ma;
+                                    res_sign = b[15] ^ sign;
+                                end
+                            end
+                            if (tmp_result == 0)
+                                result = 0;
+                            else if (tmp_result[11] == 1)
+                            begin
+                                tmp_result = tmp_result >> 1;
+                                eres = eres + 1;
+                                result = (eres >= 31) ? {res_sign, 5'h1F, 10'd0} : {res_sign, eres[4:0], tmp_result[9:0]};
+                            end
+                            else
+                            begin
+                                lead_zero = 0;
+                                while (tmp_result[10] != 1 && (lead_zero != 10))
+                                begin
+                                    tmp_result = tmp_result << 1;
+                                    lead_zero++;
+                                end
+                                eres = eres - lead_zero;
+                                if (eres > 0)
+                                    result = {res_sign, eres[4:0], tmp_result[9:0]};
+                                else
+                                    result = 0;
+                            end
                         end
-                        else if(b[15]==1'b1)
-                        begin
-                            opb = -((2.0**(int'(b[14:10]-15)))*((1.0)+(b[9]/2.0)+(b[8]/4.0)+(b[7]/8.0)+(b[6]/16.0)+(b[5]/32.0)+(b[4]/64.0)+(b[3]/128.0)+(b[2]/256.0)+(b[1]/512.0)+(b[0]/1024.0)));
-                        end
-                        if(sign==0)
-                        begin
-                            //$display("addition");
-                            real_result = opa + opb;
-                            //sign = 0;
-                        end
-                        else
-                        begin
-                            //$display("subtraction");
-                            real_result = opa - opb;
-                            //sign = 0;
-                        end
-                        //$display("result is: %0f",real_result);
-                        result = real_to_fp16(real_result);
                         busy_cnt=0;
                         //$display("4 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
@@ -286,41 +397,4 @@ class scoreboard extends uvm_scoreboard;
         end
     endtask
 
-    function automatic logic [15:0] real_to_fp16(real val);
-    logic [63:0] fp64_bits;
-    logic        sign;
-    logic [10:0] exp64;
-    logic [51:0] frac64;
-
-    logic [4:0]  exp16;
-    logic [9:0]  frac16;
-    int          true_exp;
-
-    fp64_bits = $realtobits(val);
-    //$display("fp64 fomrat bits are %0b",fp64_bits);
-
-    sign   = fp64_bits[63];
-    exp64  = fp64_bits[62:52];
-    frac64 = fp64_bits[51:0];
-
-    true_exp = int'(exp64) - 1023;
-
-    // overflow and underflow
-    if ((exp64 == 11'h000) || (exp64 == 11'h7FF) || (true_exp > 15) || (true_exp < -14))
-    begin
-        exp16  = 5'h00;
-        frac16 = 10'h000;
-    end
-    else
-    begin
-        //Apply FP16 bias (15) to the true exponent
-        exp16  = 5'(true_exp + 15);
-        //Truncate the 52-bit fraction down to 10 bits
-        frac16 = frac64[51:42];
-        //$display("frac16_mentissa: %0b",frac16);
-    end
-    return {sign, exp16, frac16};
-endfunction
-
 endclass
-
