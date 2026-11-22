@@ -128,24 +128,7 @@ class scoreboard extends uvm_scoreboard;
                 refv.uo_out[2] = 0;
                 refv.uo_out[0] = 1;
                 busy_cnt++;
-                if(a[14:0]==0)
-                begin
-                    if(busy_cnt==3)
-                    begin
-                        // ip.uo_out[0] = 0;
-                        // ip.uo_out[1] = 1;
-                        // ip.uo_out[2] = 0;
-                        refv.uo_out[0] = 0;
-                        refv.uo_out[1] = 1;
-                        refv.uo_out[2] = 0;
-                        p_busy = 0;
-                        operation_complete = 1;
-                        result = b;
-                        busy_cnt=0;
-                        $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
-                    end
-                end
-                else if(b[14:0]==0)
+                if(b[14:0]==0)
                 begin
                     if(busy_cnt==3)
                     begin
@@ -158,6 +141,23 @@ class scoreboard extends uvm_scoreboard;
                         p_busy = 0;
                         operation_complete = 1;
                         result = a;
+                        busy_cnt=0;
+                        $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
+                    end
+                end
+                else if(a[14:0]==0)
+                begin
+                    if(busy_cnt==3)
+                    begin
+                        // ip.uo_out[0] = 0;
+                        // ip.uo_out[1] = 1;
+                        // ip.uo_out[2] = 0;
+                        refv.uo_out[0] = 0;
+                        refv.uo_out[1] = 1;
+                        refv.uo_out[2] = 0;
+                        p_busy = 0;
+                        operation_complete = 1;
+                        result = b;
                         busy_cnt=0;
                         $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
@@ -195,7 +195,7 @@ class scoreboard extends uvm_scoreboard;
                         eb = b[14:10];
                         ma = {1'b1,a[9:0]};
                         mb = {1'b1,b[9:0]};
-                        ediff = ((ea-eb)>0)?(ea-eb):(eb-ea);
+                        ediff = (ea>eb)?(ea-eb):(eb-ea);
                         if(ea>eb)
                         begin
                             mb = mb>>ediff;
@@ -241,7 +241,7 @@ class scoreboard extends uvm_scoreboard;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = {res_sign,14'b0};
+                                    result = {res_sign,15'b0};
                             end
                         end
                         else if (eb > ea)
@@ -282,7 +282,7 @@ class scoreboard extends uvm_scoreboard;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = {res_sign,14'b0};
+                                    result = {res_sign,15'b0};
                             end
                         end
                         else
@@ -326,7 +326,7 @@ class scoreboard extends uvm_scoreboard;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = {res_sign,14'b0};
+                                    result = {res_sign,15'b0};
                             end
                         end
                         busy_cnt=0;
