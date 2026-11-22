@@ -672,3 +672,53 @@ class add_sub_test extends test;
 
 endclass
 ///////////////////////////////////////////////////////////////////////////
+
+class read_busy_test extends test;
+
+    `uvm_component_utils(read_busy_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    read_busy seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+
+        seq2 = read_busy::type_id::create("seq");
+        repeat(50000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class write_read_busy_test extends test;
+
+    `uvm_component_utils(write_read_busy_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    write_read_busy seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+
+        seq2 = write_read_busy::type_id::create("seq");
+        repeat(100000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass

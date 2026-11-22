@@ -1687,3 +1687,99 @@ class add_sub extends my_sequence;
 
 endclass
 
+class read_busy extends my_sequence;
+
+    `uvm_object_utils(read_busy)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            if((count==0) || (count==2) || (count==4) || (count==6))
+            {
+                ui_in[0] == 1;
+            }
+            else
+            {
+                ui_in[0] == 0;
+            }
+            if((count==13) || (count==15) || (count==17) || (count==19))
+            {
+                ui_in[1] == 1;
+            }
+            else
+            {
+                ui_in[1] == 0;
+            }
+            if((count==12))
+            {
+                ui_in[2] == 1;
+            }
+            else
+            {
+                ui_in[2] == 0;
+            }
+
+
+        };
+        finish_item(req);
+    endtask
+
+endclass
+
+
+class write_read_busy extends my_sequence;
+
+    `uvm_object_utils(write_read_busy)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+        needed_count=48;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            if((count==0) || (count==2) || (count==4) || (count==6) || (count==13) || (count==15))
+            {
+                ui_in[0] == 1;
+            }
+            else
+            {
+                ui_in[0] == 0;
+            }
+            if((count==13) || (count==15) || (count==24) || (count==26) || (count==44) || (count==46))
+            {
+                ui_in[1] == 1;
+            }
+            else
+            {
+                ui_in[1] == 0;
+            }
+            if((count==12) || (count==32))
+            {
+                ui_in[2] == 1;
+            }
+            else
+            {
+                ui_in[2] == 0;
+            }
+
+
+        };
+        finish_item(req);
+    endtask
+
+endclass

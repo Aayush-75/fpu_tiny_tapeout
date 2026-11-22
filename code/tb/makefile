@@ -1,5 +1,5 @@
 TOP_FILE = top.sv
-TESTNAME = operand1_zero_test
+TESTNAME = write_read_busy_test
 TESTS = reset_test \
         normal_addition_test \
         normal_subtraction_test \
@@ -24,7 +24,9 @@ TESTS = reset_test \
         error_recover_test \
         start_pulse_test \
         multiple_addition_test \
-        add_sub_test
+        add_sub_test \
+		read_busy_test \
+		write_read_busy_test
 
 COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 
