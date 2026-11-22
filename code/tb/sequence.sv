@@ -41,96 +41,27 @@ class normal_addition extends my_sequence;
     endfunction
 
     task body();
-        needed_count=16;
+        needed_count=17;
         uvm_config_db#(longint)::set(null,"*","count",needed_count);
         req = seq_item::type_id::create("seq");
         start_item(req);
         req.randomize() with
         {
             rst_n == 1;
+            ui_in[3] == 0;
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
-
+             
+                
             }
             else
             {
                 ui_in[0] == 0;
             }
             //read_en
-            if((count==14) || (count==16) )// || (count == 18) || (count == 22))
-            {
-                ui_in[1] == 1;
-            }
-            else
-            {
-                ui_in[1] == 0;
-            }
-            //start
-            if(count==10)
-            {
-                ui_in[2] == 1;
-            }
-            else
-            {
-                ui_in[2] == 0;
-            }
-            //opcode
-            if(count==11)
-                ui_in[3] == 0;
-              /*
-               if (count==1)
-                    uio_in ==8'b00000000;
-
-                if (count ==3)
-                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-                 if (count ==5)
-                   uio_in == 8'b00000000;
-                  if (count ==7)
-                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
-                  */
-
-        };
-        finish_item(req);
-    endtask
-
-endclass
-
-///////////////////////
-
-class normal_subtraction extends my_sequence;
-
-    `uvm_object_utils(normal_subtraction)
-
-    function new(string name="");
-        super.new(name);
-    endfunction
-
-
-
-   task body();
-        needed_count=15;
-        uvm_config_db#(longint)::set(null,"*","count",needed_count);
-        req = seq_item::type_id::create("seq");
-        start_item(req);
-        req.randomize() with
-        {
-            rst_n == 1;
-            //write_en
-            if((count==0) || (count==2) || (count==4) || (count==6))
-            {
-                ui_in[0] == 1;
-
-
-            }
-            else
-            {
-                ui_in[0] == 0;
-            }
-            //read_en
-            if((count==13) || (count==15))
+            if((count==12) || (count==14)  || (count == 16))
             {
                 ui_in[1] == 1;
             }
@@ -147,19 +78,64 @@ class normal_subtraction extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==9)
+          
+        };
+        finish_item(req);
+    endtask
+
+endclass
+
+
+class normal_subtraction extends my_sequence;
+
+    `uvm_object_utils(normal_subtraction)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+  
+
+   task body();
+        needed_count=14;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] == 1;
+            //write_en
+            if((count==0) || (count==2) || (count==4) || (count==6))
             {
-                ui_in[3] == 1;
+                ui_in[0] == 1;
+             
+               
             }
-             /*if (count==1)
-                uio_in ==8'b00000000;
-            if (count ==3)
-                uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-            if (count ==5)
-                uio_in == 8'b00000000;
-            if (count ==7)
-                uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),*/
+            else
+            {
+                ui_in[0] == 0;
+            }
+            //read_en
+            if((count==12) || (count==14))
+            {
+                ui_in[1] == 1;
+            }
+            else
+            {
+                ui_in[1] == 0;
+            }
+            //start
+            if(count==8)
+            {
+                ui_in[2] == 1;
+            }
+            else
+            {
+                ui_in[2] == 0;
+            }
+           
+          
         };
         finish_item(req);
     endtask
@@ -187,7 +163,7 @@ class normal_inf extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+            
             }
             else
             {
@@ -211,14 +187,14 @@ class normal_inf extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-
+          
         };
         finish_item(req);
     endtask
 
 endclass
 
-
+/////
 class normal_overflow extends my_sequence;
 
     `uvm_object_utils(normal_overflow)
@@ -235,11 +211,12 @@ class normal_overflow extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
+            uio_in[7:3] inside {5'b11110};
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -263,20 +240,8 @@ class normal_overflow extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
 
-             if (count==1)
-                    uio_in ==8'b11111111;
-             if (count ==3)
-                   uio_in == 8'b01111011;    // 8'h7B &&8'hFF ( 0_11110_1111111111)
-             if (count ==5)
-                   uio_in == 8'b11111110;
-             if (count ==7)
-                    uio_in ==8'b01111011;//   8'h7B &8'hFE (0_11110_1111111110)
+           
         };
         finish_item(req);
     endtask
@@ -304,7 +269,7 @@ class normal_underflow extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+              
             }
             else
             {
@@ -328,19 +293,8 @@ class normal_underflow extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 1;
-            }
-            if (count==1)
-                 uio_in ==8'b00000000;
-            if (count ==3)
-                uio_in == 8'b00001000;    // 8'h08 & 8'h00 (0_00010_0000000000),
-            if (count ==5)
-                uio_in == 8'b11111111;
-            if (count ==7)
-                 uio_in ==8'b00000111;//    8'h07 & 8'hFF (0_00001_1111111111)
+           
+           
         };
         finish_item(req);
     endtask
@@ -363,11 +317,12 @@ class normal_zero extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
+            uio_in ==0;
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -391,19 +346,7 @@ class normal_zero extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
-            if (count==1)
-                    uio_in ==8'b00000000;
-            if (count ==3)
-                   uio_in == 8'b00000000;    // 8'h00 & 8'h00
-            if (count ==5)
-                   uio_in == 8'b00000000;
-            if (count ==7)
-                    uio_in ==8'b00000000;//    8'h00 & 8'h00
+           
         };
         finish_item(req);
     endtask
@@ -431,15 +374,15 @@ class write_en_high extends my_sequence;
             if((count==0) || (count==1) || (count==2) || (count==4) || (count==6) || (count ==8))
             {
                 ui_in[0] == 1;
-
+               
             }
-
+           
             else
             {
                 ui_in[0] == 0;
             }
             //read_en
-            if((count==14) || (count==16))
+            if((count==14) || (count==16) ||(count ==12))
             {
                 ui_in[1] == 1;
             }
@@ -456,20 +399,8 @@ class write_en_high extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==11)
-            {
-                ui_in[3] == 0;
-            }
-
-             if (count==1)
-                   uio_in ==8'b00000000;       // 8'h00
-             if (count ==5)
-                   uio_in == 8'b00111110;    // 8'h3E
-             if (count ==7)
-                   uio_in == 8'b10000000;  // 8'h80
-             if (count ==9)
-                   uio_in ==8'b01000000;//    8'h40
+            
+  
         };
         finish_item(req);
     endtask
@@ -497,7 +428,7 @@ class normal_NAN extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -521,11 +452,7 @@ class normal_NAN extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
+           
             if (count==1)
                     uio_in ==8'b00000000;
             if (count ==3)
@@ -533,7 +460,7 @@ class normal_NAN extends my_sequence;
             if (count ==5)
                    uio_in == 8'b00000000;
             if (count ==7)
-                    uio_in ==8'b00111100;//    uio_in = 8'h3c &8'h00 (0_01111_0000000000)
+                    uio_in ==8'b00111100;//    uio_in = 8'h3c &8'h00 (0_01111_0000000000) 
         };
         finish_item(req);
     endtask
@@ -557,12 +484,12 @@ class reset_in_between extends my_sequence;
         start_item(req);
         req.randomize() with
         {
-           // rst_n ==1 ;
+          
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+             
             }
             else
             {
@@ -586,13 +513,9 @@ class reset_in_between extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==9)
-            {
-                ui_in[3] == 0;
-            }
+           
 
-            if (count==14)
+            if (count==14) 
               {
                  rst_n ==0;
               }
@@ -601,14 +524,7 @@ class reset_in_between extends my_sequence;
                 rst_n ==1 ;
               }
 
-            if (count==1)
-                  uio_in ==8'b00000000;
-            if (count ==3)
-                 uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-            if (count ==5)
-                 uio_in == 8'b00000000;
-            if (count ==7)
-                 uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
+           
         };
         finish_item(req);
     endtask
@@ -639,7 +555,7 @@ class subnormal extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -663,19 +579,15 @@ class subnormal extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
+           
             if (count==1)
                     uio_in ==8'b00010000;
             if (count ==3)
-                   uio_in == 8'b00000000;  // uio_in =16'h 10 ( 0_00000_0000010000)
+                   uio_in == 8'b00000000;  // uio_in =16'h 10 ( 0_00000_0000010000) 
             if (count ==5)
                    uio_in == 8'b00100000;
             if (count ==7)
-                    uio_in ==8'b00000000;//   16'h20 (0_00000_0000100000)
+                    uio_in ==8'b00000000;//   16'h20 (0_00000_0000100000) 
         };
         finish_item(req);
     endtask
@@ -702,7 +614,7 @@ class operand1_zero extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -726,15 +638,11 @@ class operand1_zero extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==9)
-            {
-                ui_in[3] == 1;
-            }
+           
             if (count==1)
                     uio_in ==8'b00000000;
             if (count ==3)
-                   uio_in == 8'b00000000;  // uio_in =16'h 00 ( 0_00000_0000010000)
+                   uio_in == 8'b00000000;  // uio_in =16'h 00 ( 0_00000_0000010000) 
             if (count ==5)
                    uio_in == 8'b00000000;
             if (count ==7)
@@ -766,7 +674,7 @@ class operand2_zero extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -790,11 +698,7 @@ class operand2_zero extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
+           
             if (count==1)
                     uio_in ==8'b00000000;
             if (count ==3)
@@ -802,7 +706,7 @@ class operand2_zero extends my_sequence;
             if (count ==5)
                    uio_in == 8'b00000000;
             if (count ==7)
-                    uio_in ==8'b00000000;//   16'h00 (0_00000_0000100000)
+                    uio_in ==8'b00000000;//   16'h00 (0_00000_0000100000) 
         };
         finish_item(req);
     endtask
@@ -810,9 +714,9 @@ class operand2_zero extends my_sequence;
 endclass
 
 
-class signed_addition extends my_sequence;
+class signed_add_sub extends my_sequence;
 
-    `uvm_object_utils(signed_addition)
+    `uvm_object_utils(signed_add_sub)
 
     function new(string name="");
         super.new(name);
@@ -826,11 +730,12 @@ class signed_addition extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
+            uio_in[7] ==1 ;
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -854,30 +759,18 @@ class signed_addition extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
-            if (count==1)
-                    uio_in ==8'b00000000;
-            if (count ==3)
-                   uio_in == 8'b10111110;  // uio_in = 8'hBE &&8'h00 ( 1_01111_1000000000)
-            if (count ==5)
-                   uio_in == 8'b00000000;
-
-            if (count ==7)
-                   uio_in ==8'b11000000;//   uio_in = 8'hC0 &8'h00 (1_10000_0000000000)
-
+           
+           
+            
         };
         finish_item(req);
     endtask
 
 endclass
 
-class addition_8_write extends my_sequence;
+class add_sub_8_write extends my_sequence;
 
-    `uvm_object_utils(addition_8_write)
+    `uvm_object_utils(add_sub_8_write)
 
     function new(string name="");
         super.new(name);
@@ -895,7 +788,7 @@ class addition_8_write extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6) ||(count==8) || (count==10) || (count==12) || (count==14))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -919,29 +812,8 @@ class addition_8_write extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==16)
-            {
-                ui_in[3] == 0;
-            }
-            if (count==1)
-                    uio_in ==8'b00000000;
-            if (count ==3)
-                   uio_in == 8'b01000010;  // uio_in =8'h42 && 8'h00 (0_10000_100000000)
-             if (count ==5)
-                   uio_in == 8'b00000000;
-            if (count ==7)
-                    uio_in ==8'b01000100;//   uio_in = 8'h44 &&8'h00 (0_10001_0000000000)
-
-             if (count==9)
-                    uio_in ==8'b00000000;
-            if (count ==11)
-                   uio_in == 8'b00111000;  // uio_in = 8'h38 &&8'h00 (0_01110_0000000000)
-             if (count ==13)
-                   uio_in == 8'b00000000;
-            if (count ==15)
-                    uio_in ==8'b00111100;//   uio_in =8'h3c && 8'h00 (0_01111_00000000)
-
+          
+           
         };
         finish_item(req);
     endtask
@@ -968,8 +840,8 @@ class read_delay extends my_sequence;
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
-
+             
+               
             }
             else
             {
@@ -993,20 +865,9 @@ class read_delay extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if(count==8)
-            {
-                ui_in[3] == 0;
-            }
-               if (count==1)
-                    uio_in ==8'b00000000;
-                if (count ==3)
-                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-                 if (count ==5)
-                   uio_in == 8'b00000000;
-                  if (count ==7)
-                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
-
+            
+           
+                
         };
         finish_item(req);
     endtask
@@ -1030,12 +891,12 @@ class ena_toggle extends my_sequence;
         {
             rst_n == 1;
             ena == 0;
-             ui_in[3] == 0;
+            
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -1059,17 +920,7 @@ class ena_toggle extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-
-            if (count==1)
-                    uio_in ==8'b00000000;
-            if (count ==3)
-                   uio_in == 8'b10111110;  // uio_in = 8'hBE &&8'h00 ( 1_01111_1000000000)
-            if (count ==5)
-                   uio_in == 8'b00000000;
-
-            if (count ==7)
-                   uio_in ==8'b11000000;//   uio_in = 8'hC0 &8'h00 (1_10000_0000000000)
-
+  
         };
         finish_item(req);
     endtask
@@ -1093,7 +944,7 @@ class read_only extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-
+            
             //read_en
             if((count==0) || (count==2))
             {
@@ -1103,8 +954,8 @@ class read_only extends my_sequence;
             {
                 ui_in[1] == 0;
             }
-
-
+            
+          
         };
         finish_item(req);
     endtask
@@ -1129,12 +980,12 @@ class write_read_11 extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-             ui_in[3] == 0;
+           
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -1159,15 +1010,6 @@ class write_read_11 extends my_sequence;
                 ui_in[2] == 0;
             }
 
-            if (count==1)
-                  uio_in ==8'b00000000;
-            if (count ==3)
-                  uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-            if (count ==5)
-                  uio_in == 8'b00000000;
-            if (count ==7)
-                  uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
-
         };
         finish_item(req);
     endtask
@@ -1190,18 +1032,18 @@ class normalization extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-             ui_in[3] == 0;
-
+           
+            
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
                 ui_in[0] == 0;
             }
-
+           
             if((count==12) || (count==14))
             {
                 ui_in[1] == 1;
@@ -1210,7 +1052,7 @@ class normalization extends my_sequence;
             {
                 ui_in[1] == 0;
             }
-
+           
             if(count==8)
             {
                 ui_in[2] == 1;
@@ -1219,98 +1061,22 @@ class normalization extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-
-
+ 
             if (count==1)
                   uio_in ==8'b00000000;
             if (count ==3)
-                  uio_in == 8'b00111100;   // 16'h3C00 (0_01111_0000000000)
+                  uio_in == 8'b00111100;   // 16'h3C00 (0_01111_0000000000)               
             if (count ==5)
                   uio_in == 8'b00000000;
             if (count ==7)
                   uio_in == 8'b10111000;// 16'hB800 ( 1_01110_0000000000)
-
+            
         };
         finish_item(req);
     endtask
 
 endclass
 
-/*
-class write_busy extends my_sequence;
-
-    `uvm_object_utils(write_busy)
-
-    function new(string name="");
-        super.new(name);
-    endfunction
-
-    task body();
-        needed_count=19;
-        uvm_config_db#(longint)::set(null,"*","count",needed_count);
-        req = seq_item::type_id::create("seq");
-        start_item(req);
-        req.randomize() with
-        {
-            rst_n == 1;
-            //write_en
-            if((count==0) || (count==2) || (count==4) || (count==6) || (count ==9) || (count ==11) || (count ==13) || (count == 15))
-            {
-                ui_in[0] == 1;
-
-            }
-            else
-            {
-                ui_in[0] == 0;
-            }
-            //read_en
-            if((count==17) || (count==19))
-            {
-                ui_in[1] == 1;
-            }
-            else
-            {
-                ui_in[1] == 0;
-            }
-            //start
-            if(count==8)
-            {
-                ui_in[2] == 1;
-            }
-            else
-            {
-                ui_in[2] == 0;
-            }
-            //opcode
-            if(count==9)
-            {
-                ui_in[3] == 0;
-            }
-
-            if (count==1)
-                    uio_in ==8'b00000000;
-            if (count ==3)
-                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
-             if (count ==5)
-                   uio_in == 8'b00000000;
-            if (count ==7)
-                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
-
-              if (count==10)
-                  uio_in ==8'b00000000;
-            if (count ==12)
-                  uio_in == 8'b00111100;   // 16'h3C00 (0_01111_0000000000)
-            if (count ==14)
-                  uio_in == 8'b00000000;
-            if (count ==16)
-                  uio_in == 8'b10111000;// 16'hB800 ( 1_01110_0000000000)
-
-        };
-        finish_item(req);
-    endtask
-
-endclass
-*/
 
 class write_busy extends my_sequence;
 
@@ -1328,7 +1094,7 @@ class write_busy extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-
+          
             if((count==0) || (count==2) || (count==4) || (count==6) || (count==13) || (count==15))
             {
                 ui_in[0] == 1;
@@ -1337,7 +1103,7 @@ class write_busy extends my_sequence;
             {
                 ui_in[0] == 0;
             }
-
+           
             if((count==24) || (count==26) || (count==44) || (count==46))
             {
                 ui_in[1] == 1;
@@ -1346,7 +1112,7 @@ class write_busy extends my_sequence;
             {
                 ui_in[1] == 0;
             }
-
+           
             if((count==12) || (count==32))
             {
                 ui_in[2] == 1;
@@ -1356,27 +1122,7 @@ class write_busy extends my_sequence;
                 ui_in[2] == 0;
             }
 
-            ui_in[3] == 0;
-
-            ui_in[7:4] == 4'b0000;
-
-
-            if (count==1)
-                uio_in == 8'b00000000;
-            if (count==3)
-                uio_in == 8'b01000100;   // 8'h44
-
-
-            if (count==5)
-                uio_in == 8'b00000000;
-            if (count==7)
-                uio_in == 8'b01000101;   // 8'h45
-
-
-            if (count==14)
-                uio_in == 8'b00000001;
-            if (count==16)
-                uio_in == 8'b00111100;   // 8'h3C
+          
         };
         finish_item(req);
     endtask
@@ -1398,12 +1144,12 @@ class error_recover extends my_sequence;
         start_item(req);
         req.randomize() with
         {
-          //  rst_n == 1;
+
             //write_en
             if((count==0) || (count==2) || (count==4) || (count==6) || (count ==18) || (count ==20) || (count ==22) || (count ==24))
             {
                 ui_in[0] == 1;
-
+               
             }
             else
             {
@@ -1427,12 +1173,8 @@ class error_recover extends my_sequence;
             {
                 ui_in[2] == 0;
             }
-            //opcode
-            if((count==9) || (count ==27 ))
-            {
-                ui_in[3] == 0;
-            }
 
+            
             if (count ==17)
              {
                 rst_n == 0;
@@ -1442,7 +1184,7 @@ class error_recover extends my_sequence;
                 rst_n == 1 ;
               }
 
-
+            
             if (count==1)
                     uio_in ==8'b00000000;
             if (count ==3)
@@ -1450,17 +1192,17 @@ class error_recover extends my_sequence;
             if (count ==5)
                    uio_in == 8'b00000000;
             if (count ==7)
-                    uio_in ==8'b00111100;//    uio_in = 8'h3c &8'h00 (0_01111_0000000000)
-
+                    uio_in ==8'b00111100;//    uio_in = 8'h3c &8'h00 (0_01111_0000000000) 
+            
             if (count==19)
                     uio_in ==8'b00000000;
             if (count ==21)
-                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
+                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000) 
              if (count ==23)
                    uio_in == 8'b00000000;
             if (count ==25)
                     uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
-
+            
 
         };
         finish_item(req);
@@ -1472,14 +1214,6 @@ endclass
 
 //////////////////
 
-
-
-
-
-
-
-
-/////////////////
 
 
 class start_pulse extends my_sequence;
@@ -1500,7 +1234,6 @@ class start_pulse extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-            ui_in[3] ==0;
             // write_en
             if((count==0) || (count==2) || (count==4) || (count==6))
                 ui_in[0] == 1;
@@ -1514,27 +1247,13 @@ class start_pulse extends my_sequence;
             else
                 ui_in[1] == 0;
 
-
+          
             if((count==8) || (count==17))
                 ui_in[2] == 1;
             else
                 ui_in[2] == 0;
 
 
-          //  if(count==9)
-             //   ui_in[3] == 0;
-
-
-            if(count==1)
-                uio_in == 8'b00000000;
-            if(count==3)
-                uio_in == 8'b01000100;
-
-
-            if(count==5)
-                uio_in == 8'b00000000;
-            if(count==7)
-                uio_in == 8'b01000101;
         };
 
         finish_item(req);
@@ -1545,9 +1264,9 @@ endclass
 
 
 
-class multiple_addition extends my_sequence;
+class multiple_add_sub extends my_sequence;
 
-    `uvm_object_utils(multiple_addition)
+    `uvm_object_utils(multiple_add_sub)
 
     function new(string name="");
         super.new(name);
@@ -1563,8 +1282,8 @@ class multiple_addition extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
-            ui_in [3] == 0;
-
+         
+            
             if((count==0) || (count==2) || (count==4) || (count==6) ||(count==18) || (count==20) || (count==22) || (count==24))
                 ui_in[0] == 1;
             else
@@ -1575,36 +1294,13 @@ class multiple_addition extends my_sequence;
             else
                 ui_in[1] == 0;
 
-
+           
             if((count==10) || (count==28))
                 ui_in[2] == 1;
             else
                 ui_in[2] == 0;
 
-
-
-
-
-            if(count==1)
-                uio_in == 8'h00;
-            if(count==3)
-                uio_in == 8'h44;
-
-
-            if(count==5)
-                uio_in == 8'h00;
-            if(count==7)
-                uio_in == 8'h45;
-
-          if(count==19)
-              uio_in == 8'h00;
-           if(count==21)
-              uio_in == 8'h3E;
-
-           if(count==23)
-             uio_in == 8'h80;
-           if(count==25)
-              uio_in == 8'h40;
+ 
         };
 
         finish_item(req);
@@ -1633,25 +1329,25 @@ class add_sub extends my_sequence;
         {
             rst_n == 1;
 
-
+           
             if((count==0) || (count==2) || (count==4) || (count==6) || (count==18) || (count==20) || (count==22) || (count==24))
                 ui_in[0] == 1;
             else
                 ui_in[0] == 0;
 
-
+          
             if((count==14) || (count==16) ||(count==30) || (count==32) || (count ==34))
                 ui_in[1] == 1;
             else
                 ui_in[1] == 0;
 
-
+            
             if((count==10) || (count==28))
                 ui_in[2] == 1;
             else
                 ui_in[2] == 0;
 
-
+            
             if(count==11)
                 ui_in[3] == 0;
             else if(count==29)
@@ -1659,33 +1355,13 @@ class add_sub extends my_sequence;
             else
                 ui_in[3] == 0;
 
-
-            if(count==1)
-                uio_in == 8'h00;
-            if(count==3)
-                uio_in == 8'h44;
-
-            if(count==5)
-                uio_in == 8'h00;
-            if(count==7)
-                uio_in == 8'h45;
-
-
-            if(count==19)
-                uio_in == 8'h00;
-            if(count==21)
-                uio_in == 8'h3E;
-
-            if(count==23)
-                uio_in == 8'h80;
-            if(count==25)
-                uio_in == 8'h40;
         };
 
         finish_item(req);
     endtask
 
 endclass
+
 
 class read_busy extends my_sequence;
 
@@ -1703,6 +1379,7 @@ class read_busy extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
+          
             if((count==0) || (count==2) || (count==4) || (count==6))
             {
                 ui_in[0] == 1;
@@ -1711,6 +1388,7 @@ class read_busy extends my_sequence;
             {
                 ui_in[0] == 0;
             }
+           
             if((count==13) || (count==15) || (count==17) || (count==19))
             {
                 ui_in[1] == 1;
@@ -1719,6 +1397,7 @@ class read_busy extends my_sequence;
             {
                 ui_in[1] == 0;
             }
+           
             if((count==12))
             {
                 ui_in[2] == 1;
@@ -1728,7 +1407,7 @@ class read_busy extends my_sequence;
                 ui_in[2] == 0;
             }
 
-
+          
         };
         finish_item(req);
     endtask
@@ -1752,6 +1431,7 @@ class write_read_busy extends my_sequence;
         req.randomize() with
         {
             rst_n == 1;
+          
             if((count==0) || (count==2) || (count==4) || (count==6) || (count==13) || (count==15))
             {
                 ui_in[0] == 1;
@@ -1760,6 +1440,7 @@ class write_read_busy extends my_sequence;
             {
                 ui_in[0] == 0;
             }
+           
             if((count==13) || (count==15) || (count==24) || (count==26) || (count==44) || (count==46))
             {
                 ui_in[1] == 1;
@@ -1768,6 +1449,7 @@ class write_read_busy extends my_sequence;
             {
                 ui_in[1] == 0;
             }
+           
             if((count==12) || (count==32))
             {
                 ui_in[2] == 1;
@@ -1777,9 +1459,216 @@ class write_read_busy extends my_sequence;
                 ui_in[2] == 0;
             }
 
-
+          
         };
         finish_item(req);
+    endtask
+
+endclass
+
+
+
+class start_busy extends my_sequence;
+
+    `uvm_object_utils(start_busy)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+        needed_count=17;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+          //  ui_in[3] == 0;
+            //write_en
+            if((count==0) || (count==2) || (count==4) || (count==6))
+            {
+                ui_in[0] == 1;
+             
+                
+            }
+            else
+            {
+                ui_in[0] == 0;
+            }
+            //read_en
+            if((count==12) || (count==14)  || (count == 16))
+            {
+                ui_in[1] == 1;
+            }
+            else
+            {
+                ui_in[1] == 0;
+            }
+            //start
+            if((count==8) || (count == 10))
+            {
+                ui_in[2] == 1;
+            }
+            else
+            {
+                ui_in[2] == 0;
+            }
+           if (count ==9)
+               ui_in[3] ==1;
+             else
+              ui_in[3] ==0;
+        };
+        finish_item(req);
+    endtask
+
+endclass
+
+
+
+
+
+
+
+class start_before_ready extends my_sequence;
+
+    `uvm_object_utils(start_before_ready)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=20;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+           rst_n == 1;
+
+            if((count==0) || (count==2) ||(count==4) || (count==6))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            if((count ==5) || (count == 12))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+
+           if  (count ==9)
+            ui_in[3] == 0;
+
+           if ((count ==15)||(count == 17))
+            ui_in[1] == 1;
+          else
+           ui_in[1] ==0;
+
+            if(count==1)
+                uio_in == 8'h00;
+            if(count==3)
+                uio_in == 8'h3E;
+            if(count==5)
+                uio_in == 8'h00;
+            if(count==7)
+                uio_in == 8'h3D ;
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class incomplete_operand extends my_sequence;
+
+    `uvm_object_utils(incomplete_operand)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=20;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+
+           
+            if((count==0) || (count==2) || (count==4))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+          
+            if(count==7)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+
+           if (count == 12)
+             ui_in [1]==1;
+           
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class six_write extends my_sequence;
+
+    `uvm_object_utils(six_write)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+
+            // Six write pulses
+            if((count==0) || (count==2) ||(count==4) || (count==6) ||(count==8) || (count==10))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            // Start after six writes
+            if(count==12)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+          
+           if ((count == 16) ||(count ==18))
+            ui_in[1] == 1;
+           
+
+        };
+
+        finish_item(req);
+
     endtask
 
 endclass
