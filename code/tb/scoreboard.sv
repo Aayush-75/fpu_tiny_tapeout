@@ -30,7 +30,7 @@ class scoreboard extends uvm_scoreboard;
     bit [11:0]tmp_result;
     bit [10:0]ma,mb;
 
-    int ea,eb,lead_zero;
+    int ea,eb,eres,lead_zero;
     bit [4:0]ediff;
     bit res_sign;
 
@@ -197,11 +197,11 @@ class scoreboard extends uvm_scoreboard;
                         mb = {1'b1,b[9:0]};
                         ediff = ((ea-eb)>0)?(ea-eb):(eb-ea);
                         if(ea>eb)
-                        begin  
+                        begin
                             mb = mb>>ediff;
                             eres = ea;
                             res_sign = a[15];
-                            if(sign==0) 
+                            if(sign==0)
                             begin
                                 if(a[15]==b[15])
                                 begin
@@ -225,42 +225,42 @@ class scoreboard extends uvm_scoreboard;
                             end
                             if (tmp_result[11] == 1)
                             begin
-                                tmp_result = tmp_result >> 1; 
+                                tmp_result = tmp_result >> 1;
                                 eres = eres + 1;
                                 result = (eres >= 31) ? {res_sign, 5'h1F, 10'd0} : {res_sign, eres[4:0], tmp_result[9:0]};
                             end
                             else
                             begin
-                                lead_zero = 0;               
+                                lead_zero = 0;
                                 while ((tmp_result[10] != 1) && (lead_zero != 10))
                                 begin
                                     tmp_result = tmp_result << 1;
                                     lead_zero++;
                                 end
-                                eres = eres - lead_zero;     
+                                eres = eres - lead_zero;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = 0;
+                                    result = {res_sign,14'b0};
                             end
                         end
                         else if (eb > ea)
                         begin
                             ma = ma >> ediff;
-                            eres = eb;             
-                            res_sign = b[15] ^ sign; 
+                            eres = eb;
+                            res_sign = b[15] ^ sign;
 
-                            if (sign == 0) 
+                            if (sign == 0)
                             begin
                                 if (a[15] == b[15])
                                     tmp_result = ma + mb;
                                 else
-                                    tmp_result = mb - ma; 
+                                    tmp_result = mb - ma;
                             end
-                            else 
+                            else
                             begin
                                 if (a[15] == b[15])
-                                    tmp_result = mb - ma; 
+                                    tmp_result = mb - ma;
                                 else
                                     tmp_result = ma + mb;
                             end
@@ -282,10 +282,10 @@ class scoreboard extends uvm_scoreboard;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = 0;
+                                    result = {res_sign,14'b0};
                             end
                         end
-                        else 
+                        else
                         begin
                             eres = ea;
                             if ((sign == 0 && a[15] == b[15]) || (sign == 1 && a[15] != b[15]))
@@ -326,7 +326,7 @@ class scoreboard extends uvm_scoreboard;
                                 if (eres > 0)
                                     result = {res_sign, eres[4:0], tmp_result[9:0]};
                                 else
-                                    result = 0;
+                                    result = {res_sign,14'b0};
                             end
                         end
                         busy_cnt=0;

@@ -13,7 +13,7 @@ module top;
 
     fpu_if DUV_IF(clk);
 
-	bind syn_fifo tt_um_project_fpu fpu_assertions u_assert
+	bind tt_um_project_fpu fpu_assertions u_assert
 	(
 	.clk(clk),
     .rst_n(DUV_IF.rst_n),

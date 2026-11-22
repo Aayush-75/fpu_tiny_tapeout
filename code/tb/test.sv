@@ -67,7 +67,7 @@ class normal_addition_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_addition::type_id::create("seq");
-        repeat(18) seq2.start(environment.ia.sqr);
+        repeat(5000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -94,7 +94,7 @@ class normal_subtraction_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_subtraction::type_id::create("seq");
-        repeat(15) seq2.start(environment.ia.sqr);
+        repeat(100000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -121,7 +121,7 @@ class normal_inf_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_inf::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(500000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -612,7 +612,7 @@ class start_pulse_test extends test;
         //reset
         seq1 = reset_seq::type_id::create("seq");
         repeat(1) seq1.start(environment.ia.sqr);
-        
+
         seq2 = start_pulse::type_id::create("seq");
         repeat(100) seq2.start(environment.ia.sqr);
         #500ns;
@@ -635,10 +635,10 @@ class multiple_addition_test extends test;
 
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
-        
+
         seq1 = reset_seq::type_id::create("seq");
         repeat(1) seq1.start(environment.ia.sqr);
-       
+
         seq2 = multiple_addition::type_id::create("seq");
         repeat(100) seq2.start(environment.ia.sqr);
         #500ns;
@@ -660,10 +660,10 @@ class add_sub_test extends test;
 
     task run_phase(uvm_phase phase);
         phase.raise_objection(this);
-        
+
         seq1 = reset_seq::type_id::create("seq");
         repeat(1) seq1.start(environment.ia.sqr);
-      
+
         seq2 = add_sub::type_id::create("seq");
         repeat(100) seq2.start(environment.ia.sqr);
         #500ns;
