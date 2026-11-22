@@ -722,3 +722,114 @@ class write_read_busy_test extends test;
     endtask
 
 endclass
+
+
+
+
+class start_busy_test extends test;
+
+    `uvm_component_utils(start_busy_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    start_busy seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+      
+        seq2 = start_busy::type_id::create("seq");
+        repeat(500) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+
+
+
+
+class start_before_ready_test extends test;
+
+    `uvm_component_utils(start_before_ready_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    start_before_ready seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+      
+        seq2 = start_before_ready::type_id::create("seq");
+        repeat(500) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+
+class incomplete_operand_test extends test;
+
+    `uvm_component_utils(incomplete_operand_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    incomplete_operand seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+      
+        seq2 = incomplete_operand::type_id::create("seq");
+        repeat(500) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+class six_write_test extends test;
+
+    `uvm_component_utils(six_write_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    six_write seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(1) seq1.start(environment.ia.sqr);
+      
+        seq2 = six_write::type_id::create("seq");
+        repeat(500) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
