@@ -157,7 +157,7 @@ class scoreboard extends uvm_scoreboard;
                         refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
-                        result = b;
+                        result = {sign,b[14:0]};
                         busy_cnt=0;
                         $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
@@ -347,13 +347,13 @@ class scoreboard extends uvm_scoreboard;
                     end
                 endcase
             //end
-            if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0) && (!operation_complete))
+            if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0))
             begin
                 p_busy = 1;
                 //$display("got sign and on next cycle I ll store sign %0b",sign);
                 store_now = 1;
             end
-            else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0) && (!operation_complete))
+            else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0))
             begin
                 p_write_operand = 1;
             end

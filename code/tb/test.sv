@@ -94,7 +94,7 @@ class normal_subtraction_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_subtraction::type_id::create("seq");
-        repeat(100000) seq2.start(environment.ia.sqr);
+        repeat(500000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -147,7 +147,7 @@ class normal_overflow_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_overflow::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(500) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -173,7 +173,7 @@ class normal_underflow_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_underflow::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(500) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -199,7 +199,7 @@ class normal_zero_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_zero::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(5000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -225,7 +225,7 @@ class write_en_high_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = write_en_high::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(500) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -251,7 +251,7 @@ class normal_NAN_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normal_NAN::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(500) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -303,7 +303,7 @@ class subnormal_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = subnormal::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(1000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -328,7 +328,7 @@ class operand1_zero_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = operand1_zero::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -354,7 +354,7 @@ class operand2_zero_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = operand2_zero::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -380,7 +380,7 @@ class signed_addition_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = signed_addition::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -406,7 +406,7 @@ class addition_8_write_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = addition_8_write::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -432,7 +432,7 @@ class read_delay_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = read_delay::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -459,7 +459,7 @@ class ena_toggle_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = ena_toggle::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(1000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -484,7 +484,7 @@ class read_only_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = read_only::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(100000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -510,7 +510,7 @@ class write_read_11_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = write_read_11::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -535,7 +535,7 @@ class normalization_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = normalization::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -561,7 +561,7 @@ class write_busy_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = write_busy::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -587,7 +587,7 @@ class error_recover_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = error_recover::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -614,7 +614,7 @@ class start_pulse_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
 
         seq2 = start_pulse::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -640,7 +640,7 @@ class multiple_addition_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
 
         seq2 = multiple_addition::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(10000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -665,7 +665,7 @@ class add_sub_test extends test;
         repeat(1) seq1.start(environment.ia.sqr);
 
         seq2 = add_sub::type_id::create("seq");
-        repeat(100) seq2.start(environment.ia.sqr);
+        repeat(100000) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
