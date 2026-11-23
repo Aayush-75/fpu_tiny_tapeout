@@ -1,3 +1,4 @@
+TOP_FILE = top.sv
 TESTNAME = write_read_busy_test
 SEEDS = 101 202 303 404
 TESTS = reset_test \
@@ -93,35 +94,6 @@ clean:
 	rm -rf simv* csrc* *.log *.vpd *.fsdb *.vdb covReport ucli.key verdiLog novas*
 
 # 10. git
-git:
-	@echo "Enter your git commit message:"; \
-	read msg; \
-	git add *.sv ../rtl/*.v makefile; \
-	git commit -m "$$msg"; \
-	git push
-
-# 6. Open the Waveform in Verdi
-wave:
-	verdi -ssf wave.fsdb &
-
-# Clean up generated files to start fresh
-clean:
-	rm -rf simv* csrc* *.log *.vpd *.fsdb *.vdb covReport ucli.key verdiLog novas*
-
-git:
-	@echo "Enter your git commit message:"; \
-	read msg; \
-	git add *.sv ../rtl/*.v makefile; \
-	git commit -m "$$msg"; \
-	git push
-# 6. Open the Waveform in Verdi
-wave:
-	verdi -ssf wave.fsdb &
-
-# Clean up generated files to start fresh
-clean:
-	rm -rf simv* csrc* *.log *.vpd *.fsdb *.vdb covReport ucli.key verdiLog novas*
-
 git:
 	@echo "Enter your git commit message:"; \
 	read msg; \
