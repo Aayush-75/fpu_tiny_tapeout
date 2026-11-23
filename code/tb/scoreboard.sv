@@ -53,10 +53,7 @@ class scoreboard extends uvm_scoreboard;
         begin
             ip_fifo.get(ip);
             op_fifo.get(op);
-            `uvm_info(get_type_name(),$sformatf("[%0t]INPUT: rst_n = %0b ena = %0b ui_in = %0b uio_in = %0b",$time,ip.rst_n,ip.ena,ip.ui_in,ip.uio_in),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_start = %0b start = %0b ready = %0b busy = %0b op_comp = %0b",p_start,ip.ui_in[2],refv.uo_out[3],refv.uo_out[0],operation_complete),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b op_comp = %0b",p_write_en,ip.ui_in[0],refv.uo_out[0],operation_complete),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],refv.uo_out[0]),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("[%0t]INPUT: rst_n = %0b ui_in[3:0] = %0b uio_in = %0b %0h",$time,ip.rst_n,ip.ui_in[3:0],ip.uio_in,ip.uio_in),UVM_NONE)
             ref_task();
             chekk();
             $display("");
@@ -347,6 +344,9 @@ class scoreboard extends uvm_scoreboard;
                     end
                 endcase
             //end
+            `uvm_info(get_type_name(),$sformatf("p_start = %0b start = %0b ready = %0b busy = %0b",p_start,ip.ui_in[2],refv.uo_out[3],refv.uo_out[0]),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b",p_write_en,ip.ui_in[0],refv.uo_out[0]),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],refv.uo_out[0]),UVM_NONE)
             if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0))
             begin
                 p_busy = 1;
