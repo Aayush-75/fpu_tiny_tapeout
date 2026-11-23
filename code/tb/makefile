@@ -1,5 +1,5 @@
-TOP_FILE = top.sv
 TESTNAME = write_read_busy_test
+SEEDS = 101 202 303 404
 TESTS = reset_test \
         normal_addition_test \
         normal_subtraction_test \
@@ -35,7 +35,7 @@ TESTS = reset_test \
 
 COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 
-.PHONY: all c s regr cov wave clean git start
+.PHONY: all c s all_case regr check cov wave clean git start
 
 .DEFAULT_GOAL := all
 
@@ -56,7 +56,7 @@ s:
 	./simv -l $(TESTNAME).log $(COV_FLAGS) -cm_name $(TESTNAME) +UVM_TESTNAME=$(TESTNAME)
 
 # 4. Run Full Regression (uses TESTS)
-regr: c
+all_case: c
 	@for t in $(TESTS); do \
 		echo "========================================"; \
 		echo "Running test: $$t"; \
@@ -64,10 +64,56 @@ regr: c
 		./simv -l $$t.log $(COV_FLAGS) -cm_name $$t +UVM_TESTNAME=$$t; \
 	done
 
-# 5. Generate the HTML Coverage Report (auto-merges all -cm_name runs in simv.vdb)
+# 5. Run Multi-Seed Regression (4 seeds per test)
+regr: c
+	@for t in $(TESTS); do \
+		for seed in $(SEEDS); do \
+			echo "========================================"; \
+			echo "Running test: $$t | Seed: $$seed"; \
+			echo "========================================"; \
+			./simv -l $${t}_$${seed}.log $(COV_FLAGS) -cm_name $${t}_$${seed} +ntb_random_seed=$$seed +UVM_TESTNAME=$$t; \
+		done; \
+	done
+
+# 6. Check all .log files for "FAIL" and print matching filenames
+check:
+	@echo "=== Logs with FAIL ==="
+	@grep -lw "FAIL" *.log || echo "No FAIL found in any .log file!"
+
+# 7. Generate the HTML Coverage Report (auto-merges all -cm_name runs in simv.vdb)
 cov:
 	urg -full64 -dir simv.vdb -report covReport
 
+# 8. Open the Waveform in Verdi
+wave:
+	verdi -ssf wave.fsdb &
+
+# 9. Clean up generated files to start fresh
+clean:
+	rm -rf simv* csrc* *.log *.vpd *.fsdb *.vdb covReport ucli.key verdiLog novas*
+
+# 10. git
+git:
+	@echo "Enter your git commit message:"; \
+	read msg; \
+	git add *.sv ../rtl/*.v makefile; \
+	git commit -m "$$msg"; \
+	git push
+
+# 6. Open the Waveform in Verdi
+wave:
+	verdi -ssf wave.fsdb &
+
+# Clean up generated files to start fresh
+clean:
+	rm -rf simv* csrc* *.log *.vpd *.fsdb *.vdb covReport ucli.key verdiLog novas*
+
+git:
+	@echo "Enter your git commit message:"; \
+	read msg; \
+	git add *.sv ../rtl/*.v makefile; \
+	git commit -m "$$msg"; \
+	git push
 # 6. Open the Waveform in Verdi
 wave:
 	verdi -ssf wave.fsdb &
