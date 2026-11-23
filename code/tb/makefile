@@ -44,13 +44,12 @@ COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 all: c s cov
 
 start:
-	/bin/csh -c "source /fetools/synopsys/source/source.sh && exec /bin/csh"
+	/bin/csh -c "setenv VCS_LIC_WAIT 1; source /fetools/synopsys/source/source.sh && exec /bin/csh"
 
 # 2. Compile the design
-# Note: Added -kdb for Verdi integration and FSDB dumping support
 c:
 	vcs -full64 -sverilog -timescale=1ns/1ps -ntb_opts uvm-1.2 \
-	-debug_access+all -kdb $(COV_FLAGS) -l compile.log $(TOP_FILE)
+	+vcs+lic+wait -debug_access+all -kdb $(COV_FLAGS) -l compile.log $(TOP_FILE)
 
 # 3. Run a Single Simulation (uses TESTNAME)
 s:
