@@ -26,7 +26,12 @@ TESTS = reset_test \
         multiple_addition_test \
         add_sub_test \
 		read_busy_test \
-		write_read_busy_test
+		write_read_busy_test \
+		start_busy_test \
+		start_before_ready_test \
+		incomplete_operand_test \
+		six_write_test \
+		read_high_try_write_test
 
 COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 
