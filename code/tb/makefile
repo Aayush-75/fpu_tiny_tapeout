@@ -32,7 +32,13 @@ TESTS = reset_test \
 		start_before_ready_test \
 		incomplete_operand_test \
 		six_write_test \
-		read_high_try_write_test
+		read_high_try_write_test \
+		read_high_write_test \
+		write_high_read_test \
+		read_before_busy_end_test \
+		write_before_busy_end_test \
+		start_before_busy_end_test
+
 
 COV_FLAGS = -cm line+cond+fsm+tgl+branch+assert
 
