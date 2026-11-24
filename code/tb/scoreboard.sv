@@ -137,7 +137,7 @@ class scoreboard extends uvm_scoreboard;
                         refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
-                        result = {sign,a[14:0]};
+                        result = a[15:0];
                         busy_cnt=0;
                         $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
