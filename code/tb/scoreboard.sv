@@ -86,7 +86,7 @@ class scoreboard extends uvm_scoreboard;
         end
         else
         begin
-            if((p_read_en==1) && p_write_operand==0) && p_busy==0)
+            if((ip.ui_in[1]==1) && (p_write_operand==0) && (p_busy==0))
             begin
                 // ip.uio_oe = 8'hFF;
                 refv.uio_oe = 8'hFF;
@@ -368,6 +368,7 @@ class scoreboard extends uvm_scoreboard;
             else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0))
             begin
                 p_write_operand = 1;
+                refv.uio_oe = 8'h00;
             end
             else if((p_read_en==1) && (ip.ui_in[1]==0) && (refv.uo_out[0]==0))
             begin

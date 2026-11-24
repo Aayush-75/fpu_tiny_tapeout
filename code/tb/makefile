@@ -1,5 +1,5 @@
 TOP_FILE = top.sv
-TESTNAME = write_read_busy_test
+TESTNAME = addition_8_write_test
 SEEDS = 101 202 303 404
 TESTS = reset_test \
         normal_addition_test \

@@ -12,17 +12,17 @@ interface fpu_if(input clk);
     logic [7:0]uio_oe;
 
     clocking drv_cb@(posedge clk);
-        default input #1 output #1;
+        default input #5 output #5;
         output rst_n,ena,ui_in,uio_in;
     endclocking
 
     clocking ip_mon_cb@(posedge clk);
-        default input #1 output #1;
+        default input #5 output #5;
         input rst_n,ena,ui_in,uio_in;
     endclocking
 
     clocking op_mon_cb@(posedge clk);
-        default input #1 output #1;
+        default input #5 output #5;
         input uo_out,uio_out,uio_oe;
     endclocking
 
