@@ -86,6 +86,16 @@ class scoreboard extends uvm_scoreboard;
         end
         else
         begin
+            if((p_read_en==1) && p_write_operand==0) && p_busy==0)
+            begin
+                // ip.uio_oe = 8'hFF;
+                refv.uio_oe = 8'hFF;
+            end
+            else
+            begin
+                // ip.uio_oe = 8'h00;
+                refv.uio_oe = 8'h00;
+            end
             if(p_write_operand==1)
             begin
                  case(write_ptr)
@@ -137,7 +147,7 @@ class scoreboard extends uvm_scoreboard;
                         refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
-                        result = a;
+                        result = {sign,a[14:0]};
                         busy_cnt=0;
                         $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
@@ -348,16 +358,6 @@ class scoreboard extends uvm_scoreboard;
             `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b",p_write_en,ip.ui_in[0],refv.uo_out[0]),UVM_NONE)
             `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],refv.uo_out[0]),UVM_NONE)
 
-            if((p_read_en==1) && (refv.uo_out[0]==0) && p_write_operand==0)
-            begin
-                // ip.uio_oe = 8'hFF;
-                refv.uio_oe = 8'hFF;
-            end
-            else
-            begin
-                // ip.uio_oe = 8'h00;
-                refv.uio_oe = 8'h00;
-            end
 
             if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0))
             begin
@@ -373,7 +373,7 @@ class scoreboard extends uvm_scoreboard;
             begin
                 read_ptr++;
             end
-            
+
           p_write_en = ip.ui_in[0];
           p_read_en = ip.ui_in[1];
           p_start = ip.ui_in[2];
