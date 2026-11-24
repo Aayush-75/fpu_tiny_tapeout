@@ -858,3 +858,131 @@ class read_high_try_write_test extends test;
     endtask
 
 endclass
+
+class read_high_write_test extends test;
+
+    `uvm_component_utils(read_high_write_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    read_high_write seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = read_high_write::type_id::create("seq");
+        repeat(10000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+class write_high_read_test extends test;
+
+    `uvm_component_utils(write_high_read_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    write_high_read seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = write_high_read::type_id::create("seq");
+        repeat(10000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class read_before_busy_end_test extends test;
+
+    `uvm_component_utils(read_before_busy_end_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    read_before_busy_end seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = read_before_busy_end::type_id::create("seq");
+        repeat(10000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+class write_before_busy_end_test extends test;
+
+    `uvm_component_utils(write_before_busy_end_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    write_before_busy_end seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = write_before_busy_end::type_id::create("seq");
+        repeat(10000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+
+class start_before_busy_end_test extends test;
+
+    `uvm_component_utils(start_before_busy_end_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    start_before_busy_end seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = start_before_busy_end::type_id::create("seq");
+        repeat(10000) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass

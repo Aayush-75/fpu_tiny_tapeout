@@ -1717,3 +1717,267 @@ class read_high_try_write extends my_sequence;
     endtask
 
 endclass
+
+class read_high_write extends my_sequence;
+
+    `uvm_object_utils(read_high_write)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] ==0;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7) || (count ==13))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            //read_en
+            if((count==12) ||(count==13) || (count==15))
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+
+            // Start after six writes
+            if(count==8)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class write_high_read extends my_sequence;
+
+    `uvm_object_utils(write_high_read)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=22;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] ==0;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7) || (count ==13) || (count ==15) ||(count==17) || (count==18) || (count ==20))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            //read_en
+            if((count==12) ||(count==14) || (count==18))
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+
+            // Start after six writes
+            if(count==8)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class read_before_busy_end extends my_sequence;
+
+    `uvm_object_utils(read_before_busy_end)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] ==0;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            //read_en
+            if((count ==11)|| (count==13) ||(count==15))
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+
+            // Start after six writes
+            if(count==8)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+            if (count==1)
+                    uio_in ==8'b00000000;
+
+                if (count ==3)
+                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
+                 if (count ==5)
+                   uio_in == 8'b00000000;
+                  if (count ==7)
+                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
+
+
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class write_before_busy_end extends my_sequence;
+
+    `uvm_object_utils(write_before_busy_end)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] ==0;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7) || (count ==11))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            //read_en
+            if((count ==12)|| (count==14))
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+
+            // Start after six writes
+            if(count==8)
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+            if (count==1)
+                    uio_in ==8'b00000000;
+
+                if (count ==3)
+                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
+                 if (count ==5)
+                   uio_in == 8'b00000000;
+                  if (count ==7)
+                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
+
+
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+
+class start_before_busy_end extends my_sequence;
+
+    `uvm_object_utils(start_before_busy_end)
+
+    function new(string name="");
+        super.new(name);
+    endfunction
+
+    task body();
+
+        needed_count=19;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+
+        req.randomize() with
+        {
+            rst_n == 1;
+            ui_in[3] ==0;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+
+            //read_en
+            if((count ==11)|| (count==13) ||(count==15))
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+
+            // Start after six writes
+            if((count==8) || (count==11))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+            if (count==1)
+                    uio_in ==8'b00000000;
+
+                if (count ==3)
+                   uio_in == 8'b01000100;                 //8'h44 & 8'h00 (0_10001_0000000000)
+                 if (count ==5)
+                   uio_in == 8'b00000000;
+                  if (count ==7)
+                    uio_in ==8'b01000101;//  8'h45 & 8'h00 (0_10001_0100000000),
+
+
+        };
+
+        finish_item(req);
+
+    endtask
+
+endclass
