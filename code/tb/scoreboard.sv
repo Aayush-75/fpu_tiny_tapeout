@@ -86,16 +86,6 @@ class scoreboard extends uvm_scoreboard;
         end
         else
         begin
-            if((ip.ui_in[1]==1) && (p_write_operand==0) && (p_busy==0))
-            begin
-                // ip.uio_oe = 8'hFF;
-                refv.uio_oe = 8'hFF;
-            end
-            else
-            begin
-                // ip.uio_oe = 8'h00;
-                refv.uio_oe = 8'h00;
-            end
             if(p_write_operand==1)
             begin
                  case(write_ptr)
@@ -340,6 +330,16 @@ class scoreboard extends uvm_scoreboard;
                         $display("4 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
+            end
+            if((ip.ui_in[1]==1) && (p_write_operand==0) && (p_busy==0))
+            begin
+                // ip.uio_oe = 8'hFF;
+                refv.uio_oe = 8'hFF;
+            end
+            else
+            begin
+                // ip.uio_oe = 8'h00;
+                refv.uio_oe = 8'h00;
             end
             //if(refv.uo_out[0]==0)
             //begin
