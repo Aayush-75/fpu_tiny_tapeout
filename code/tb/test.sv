@@ -989,3 +989,128 @@ class start_before_busy_end_test extends test;
     endtask
 
 endclass
+
+class s1_test extends test;
+
+    `uvm_component_utils(s1_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    s1 seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = s1::type_id::create("seq");
+        repeat(c) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class s2_test extends test;
+
+    `uvm_component_utils(s2_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    s2 seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = s2::type_id::create("seq");
+        repeat(c) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class s3_test extends test;
+
+    `uvm_component_utils(s3_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    s3 seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = s3::type_id::create("seq");
+        repeat(c) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class s4_test extends test;
+
+    `uvm_component_utils(s4_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    s4 seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = s4::type_id::create("seq");
+        repeat(c) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
+
+class s5_test extends test;
+
+    `uvm_component_utils(s5_test)
+
+    function new(string name="", uvm_component parent=null);
+        super.new(name,parent);
+    endfunction
+
+    reset_seq seq1;
+    s5 seq2;
+
+    task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        //reset
+        seq1 = reset_seq::type_id::create("seq");
+        repeat(5) seq1.start(environment.ia.sqr);
+        //normal addition
+        seq2 = s5::type_id::create("seq");
+        repeat(c) seq2.start(environment.ia.sqr);
+        #500ns;
+        phase.drop_objection(this);
+    endtask
+
+endclass
