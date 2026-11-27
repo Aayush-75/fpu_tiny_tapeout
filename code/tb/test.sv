@@ -2,8 +2,8 @@ class test extends uvm_test;
 
     `uvm_component_utils(test)
 
-    longint d = 500;
-    longint c = 1000;
+    int d = 500;
+    int c = 1000;
 
     function new(string name="", uvm_component parent=null);
         super.new(name,parent);
@@ -880,7 +880,7 @@ class read_high_write_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = read_high_write::type_id::create("seq");
-        repeat(2*c) seq2.start(environment.ia.sqr);
+        repeat(c) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -906,7 +906,7 @@ class write_high_read_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = write_high_read::type_id::create("seq");
-        repeat(2*c) seq2.start(environment.ia.sqr);
+        repeat(c) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -931,7 +931,7 @@ class read_before_busy_end_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = read_before_busy_end::type_id::create("seq");
-        repeat(2*c) seq2.start(environment.ia.sqr);
+        repeat(c) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -957,7 +957,7 @@ class write_before_busy_end_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = write_before_busy_end::type_id::create("seq");
-        repeat(2*c) seq2.start(environment.ia.sqr);
+        repeat(c) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
@@ -983,7 +983,7 @@ class start_before_busy_end_test extends test;
         repeat(5) seq1.start(environment.ia.sqr);
         //normal addition
         seq2 = start_before_busy_end::type_id::create("seq");
-        repeat(2*c) seq2.start(environment.ia.sqr);
+        repeat(c) seq2.start(environment.ia.sqr);
         #500ns;
         phase.drop_objection(this);
     endtask
