@@ -1981,3 +1981,179 @@ class start_before_busy_end extends my_sequence;
     endtask
 
 endclass
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////writing my additional new sequence for complete verification/////////////////////////////////////////////
+
+class s1 extends my_sequence;
+    `uvm_object_utils(s1)
+    function new(string name="");
+        super.new(name);
+    endfunction
+    task body();
+        needed_count=15;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+            //read_en
+            if((count ==1) || (count==2) ||(count==3) || (count ==4) || (count ==5) || (count==6) || (count==7) || (count==8) || (count==9) || (count==13) || (count==14) || (count==15)) 
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+            // Start
+            if((count==10) || (count==12))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+        };
+        finish_item(req);
+    endtask
+endclass
+
+class s2 extends my_sequence;
+    `uvm_object_utils(s2)
+    function new(string name="");
+        super.new(name);
+    endfunction
+    task body();
+        needed_count=16;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+            //read_en
+            if((count ==10) || (count==12) ||(count==14) || (count==16)) 
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+            // Start
+            if((count==10) || (count==12))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+        };
+        finish_item(req);
+    endtask
+endclass
+
+class s3 extends my_sequence;
+    `uvm_object_utils(s3)
+    function new(string name="");
+        super.new(name);
+    endfunction
+    task body();
+        needed_count=16;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7) || (count==10) || (count==12))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+            //read_en
+            if((count ==10) || (count==12) ||(count==14) || (count==16)) 
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+            // Start
+            if((count==10) || (count==12))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+        };
+        finish_item(req);
+    endtask
+endclass
+
+class s4 extends my_sequence;
+    `uvm_object_utils(s4)
+    function new(string name="");
+        super.new(name);
+    endfunction
+    task body();
+        needed_count=16;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7) || (count==10) || (count==12))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+            //read_en
+            if((count ==1) || (count==2) || (count==16)) 
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+            // Start
+            if((count==10) || (count==12))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+        };
+        finish_item(req);
+    endtask
+endclass
+
+class s5 extends my_sequence;
+    `uvm_object_utils(s5)
+    function new(string name="");
+        super.new(name);
+    endfunction
+    task body();
+        needed_count=20;
+        uvm_config_db#(longint)::set(null,"*","count",needed_count);
+        req = seq_item::type_id::create("seq");
+        start_item(req);
+        req.randomize() with
+        {
+            rst_n == 1;
+            // write_en
+            if((count==1) || (count==3) ||(count==5) || (count==7))
+                ui_in[0] == 1;
+            else
+                ui_in[0] == 0;
+            //read_en
+            if((count==15) || (count==20)) 
+                ui_in[1] == 1;
+            else
+                ui_in[1] == 0;
+            // Start
+            if((count==10) || (count==15))
+                ui_in[2] == 1;
+            else
+                ui_in[2] == 0;
+        };
+        finish_item(req);
+    endtask
+endclass
