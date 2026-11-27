@@ -41,6 +41,16 @@ class scoreboard extends uvm_scoreboard;
 
     int PASS,FAIL;
 
+    bit start_posedge_detected;
+    bit write_posedge_detected;
+    bit read_posedge_detected;
+    bit read_negedge_detected;
+    bit start_count;
+    bit write_count;
+    bit read_count;
+    bit write_req_serve;
+    bit read_req_serve;
+
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
         ip_fifo = new("input fifo",this);
@@ -83,34 +93,92 @@ class scoreboard extends uvm_scoreboard;
             store_now=0;
             read_ptr = 0;
             write_ptr = 0;
+            start_posedge_detected = 0;
+            write_posedge_detected = 0;
+            read_posedge_detected = 0;
+            read_negedge_detected = 0;
+            start_count = 0;
+            write_count = 0;
+            read_count = 0;
+            write_req_serve = 0;
+            read_req_serve = 0;
         end
         else
         begin
-            if(p_write_operand==1)
-            begin
-                 case(write_ptr)
-                    0: a[7:0] = ip.uio_in;
-                    1: a[15:8] = ip.uio_in;
-                    2: b[7:0] = ip.uio_in;
-                    3: b[15:8] = ip.uio_in;
-                 endcase
-                 //$display("a is %0h %0b",a,a);
-                 //$display("b is %0h %0b",b,b);
-                 p_write_operand=0;
-                 if((write_ptr)==3)
-                 begin
-                     // ip.uo_out[3] = 1'b1;
-                     refv.uo_out[3] = 1'b1;
-                 end
-                 else
-                begin
-                     // ip.uo_out[3] = 1'b0;
-                      refv.uo_out[3] = 1'b0;
-                end
-                write_ptr++;
-            end
-            // ip.uo_out[7:4] = {2'b0,write_ptr};
             refv.uo_out[7:4] = {2'b0,write_ptr};
+
+            if((p_start==0) && (ip.ui_in[2]==1) && (p_busy==0))
+            begin
+                start_posedge_detected = 1;
+            end
+            if((p_write_en==0) && (ip.ui_in[0]==1) && (start_posedge_detected==0) && (p_busy==0))
+            begin
+                write_posedge_detected = 1;
+            end
+            if((p_read_en==0) && (ip.ui_in[1]==1))
+            begin
+                read_posedge_detected = 1;
+            end
+            if((p_read_en==1) && (ip.ui_in[1]==0))
+            begin
+                read_negedge_detected = 1;
+            end
+
+            `uvm_info(get_type_name(),$sformatf("start pos=%0b write pos=%0b read pos=%0b read neg=%0b",start_posedge_detected,write_posedge_detected,read_posedge_detected,read_negedge_detected),UVM_NONE)
+            `uvm_info(get_type_name(),$sformatf("p_busy=%0b write_req_serve=%0b read_req_serve=%0b",p_busy,write_req_serve,read_req_serve),UVM_NONE)
+
+            if((start_posedge_detected==1) && (p_busy==0))
+            begin
+                if(start_count==1)
+                begin
+                    start_posedge_detected = 0;
+                    p_busy = 1;
+                    start_count = 0;
+                end
+                start_count++;
+                refv.uio_oe = 8'h00;
+            end
+            if(((write_posedge_detected==1) && (start_posedge_detected==0) && (p_busy==0)) || (write_req_serve==1))
+            begin
+                if(write_count==1)
+                begin
+                    case(write_ptr)
+                        0: a[7:0] = ip.uio_in;
+                        1: a[15:8] = ip.uio_in;
+                        2: b[7:0] = ip.uio_in;
+                        3: b[15:8] = ip.uio_in;
+                    endcase
+                    write_ptr++;
+                    write_count = 0;
+                    write_posedge_detected = 0;
+                    write_req_serve = 0;
+                end
+                write_count++;
+                refv.uio_oe = 8'h00;
+                write_req_serve = 1;
+            end
+            if((read_posedge_detected==1) && (write_posedge_detected==0) && (start_posedge_detected==0) && (p_busy==0))
+            begin
+                if(read_count==1)
+                begin
+                    case(read_ptr)
+                        0: refv.uio_out = result[7:0];
+                        1:  refv.uio_out = result[15:8];
+                    endcase
+                    read_posedge_detected == 0;
+                    read_count = 0;
+                end 
+                read_count++;
+                refv.uio_oe = 8'hFF;
+                read_req_serve = 1;
+            end
+            if((read_negedge_detected==1) && (read_req_serve==1))
+            begin
+                read_ptr++;
+                read_req_serve = 0;
+                read_negedge_detected = 0;
+            end 
+
             if(p_busy==1)
             begin
                 if(store_now==1)
@@ -137,7 +205,7 @@ class scoreboard extends uvm_scoreboard;
                         refv.uo_out[2] = 0;
                         p_busy = 0;
                         operation_complete = 1;
-                        result = a[15:0];
+                        result = {sign,a[14:0]};
                         busy_cnt=0;
                         $display("3 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
@@ -330,49 +398,6 @@ class scoreboard extends uvm_scoreboard;
                         $display("4 operated on a:%0b %0h |  b:%0b %0h",a,a,b,b);
                     end
                 end
-            end
-            if((ip.ui_in[1]==1) && (p_write_operand==0) && (p_busy==0))
-            begin
-                // ip.uio_oe = 8'hFF;
-                refv.uio_oe = 8'hFF;
-            end
-            else
-            begin
-                // ip.uio_oe = 8'h00;
-                refv.uio_oe = 8'h00;
-            end
-            //if(refv.uo_out[0]==0)
-            //begin
-                case(read_ptr)
-                    0: begin
-                        // ip.uio_out = result[7:0];
-                        refv.uio_out = result[7:0];
-                    end
-                    1: begin
-                        // ip.uio_out = result[15:8];
-                        refv.uio_out = result[15:8];
-                    end
-                endcase
-            //end
-            `uvm_info(get_type_name(),$sformatf("p_start = %0b start = %0b ready = %0b busy = %0b",p_start,ip.ui_in[2],refv.uo_out[3],refv.uo_out[0]),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_wr_en = %0b w_en = %0b busy = %0b",p_write_en,ip.ui_in[0],refv.uo_out[0]),UVM_NONE)
-            `uvm_info(get_type_name(),$sformatf("p_rd_en = %0b rd_en = %0b busy = %0b",p_read_en,ip.ui_in[1],refv.uo_out[0]),UVM_NONE)
-
-
-            if((p_start==0) && (ip.ui_in[2]==1) && (refv.uo_out[3]==1) && (refv.uo_out[0]==0))
-            begin
-                p_busy = 1;
-                //$display("got sign and on next cycle I ll store sign %0b",sign);
-                store_now = 1;
-            end
-            else if((p_write_en==0) && (ip.ui_in[0]==1) && (refv.uo_out[0]==0))
-            begin
-                p_write_operand = 1;
-                refv.uio_oe = 8'h00;
-            end
-            else if((p_read_en==1) && (ip.ui_in[1]==0) && (refv.uo_out[0]==0))
-            begin
-                read_ptr++;
             end
 
           p_write_en = ip.ui_in[0];
